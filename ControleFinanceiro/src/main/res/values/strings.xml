@@ -84,7 +84,7 @@
     //Activity ListaLancamento
     <string name="txt_cabecalho_listaLancamento">Id - Estrutura - Conta - - - - - Data - - - - - - Valor  -  </string>
 
-    //Comuns
+    //Botão voltar - Comuns
     <string name="btn_voltar">Voltar</string>
 
 
