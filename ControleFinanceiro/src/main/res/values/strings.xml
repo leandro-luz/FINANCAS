@@ -1,0 +1,91 @@
+<resources>
+    <string name="app_name">Controle Financeiro</string>
+
+    //Activity Menu
+    <string name="txt_main">Gestão Financeira</string>
+    <string name="btn_resumo">Resumo</string>
+    <string name="txt_resumo">Resumo</string>
+    <string name="btn_configuracao">Configuração</string>
+    <string name="btn_extrato">Extrato</string>
+    <string name="txt_extrato">Extrato</string>
+    <string name="btn_lancamento">Lançamento</string>
+
+    //Activity Configuração
+    <string name="btn_categoria">Categoria</string>
+    <string name="btn_tipoCategoria">Tipo</string>
+    <string name="btn_item">Item</string>
+    <string name="btn_subItem">SubItem</string>
+    <string name="btn_elemento">Elemento</string>
+    <string name="btn_favorito">Favoritos</string>
+
+    <string name="txt_configuracao">Configuração</string>
+    <string name="txt_categoria">Categoria</string>
+
+    //Activity Ação
+    <string name="btn_alterar">Alterar / Excluir</string>
+    <string name="btn_cadastrar">Cadastrar</string>
+    <string name="txt_acao">Ação</string>
+
+    //Activity Cadastro
+    <string name="btn_salvar">Salvar</string>
+    <string name="btn_excluir">Excluir</string>
+    <string name="txt_cadastrar">Cadastrar</string>
+    <string name="txt_descricao">Descrição</string>
+    <string name="txt_favorito">Favorito</string>
+    <string name="txt_habilitado">Habilitado</string>
+    <string name="txt_incremento">Incrementar</string>
+
+    <string name="txt_descricaoCategoria">Categoria</string>
+    <string name="txt_descricaoTipo">Tipo</string>
+    <string name="txt_descricaoItem">Item</string>
+    <string name="txt_descricaoSubItem">SubItem</string>
+    <string name="txt_descricaoElemento">Elemento</string>
+
+    <string name="txt_cadastrado">Cadastro realizado com sucesso!</string>
+    <string name="txt_naoCadastrado">Erro: Já existe!</string>
+    <string name="txt_DescricaoVazio">O campo Categoria está vazio, favor preencher!</string>
+    <string name="txt_TipoVazio">O campo Tipo está vazio, favor preencher!</string>
+    <string name="txt_ItemVazio">O campo Item está vazio, favor preencher!</string>
+    <string name="txt_SubItemVazio">O campo Subitem está vazio, favor preencher!</string>
+    <string name="txt_ElementoVazio">O campo Elemento está vazio, favor preencher!</string>
+    <string name="txt_BancoVazio">O campo Banco está vazio, favor preencher!</string>
+    <string name="txt_ContaVazio">O campo Conta está vazio, favor preencher!</string>
+
+    <string name="txt_btCategoriaVazio">Favor informar a categoria antes!</string>
+    <string name="txt_btTipoVazio">Favor informar o tipo antes!</string>
+    <string name="txt_btSubItemVazio">Favor informar o subitem antes!</string>
+
+    //Activity Listas - Simples e Completa
+    <string name="txt_lista">Lista</string>
+    <string name="txt_id">ID</string>
+    <string name="txt_cabecalho_listaCompleta">Id - Categoria - Tipo - Item - SubItem - Elemento</string>
+
+    //Activity Favorito
+    <string name="txt_favoritoNome">Nome:</string>
+
+    //Acttivity ListaFavorito
+    <string name="txt_cabecalho_listaFavorito">-----Id----------Nome----------------Opção-------</string>
+
+    //Activity CadastroContas
+    <string name="btn_banco">Banco</string>
+    <string name="btn_conta">Conta</string>
+    <string name="txt_saldo">Saldo</string>
+
+    //Activity CadastroLancamento
+    <string name="btn_estrutura">Estrutura</string>
+    <string name="btn_valor">Valor</string>
+    <string name="btn_data">Data</string>
+    <string name="txt_Estrutura">A estrutura não foi escolhida!</string>
+    <string name="txt_Conta">A conta não foi escolhida!</string>
+    <string name="txt_Data">A data não foi escolhida!</string>
+    <string name="txt_Valor">O valor não foi preenchido!</string>
+    <string name="txt_erroCadastro">Erro ao cadastrar lançamento!</string>
+
+    //Activity ListaLancamento
+    <string name="txt_cabecalho_listaLancamento">Id - Estrutura - Conta - - - - - Data - - - - - - Valor  -  </string>
+
+    //Comuns
+    <string name="btn_voltar">Voltar</string>
+
+
+</resources>
