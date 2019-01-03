@@ -39,7 +39,6 @@ import persist.DAO.LancamentoDao;
 import persist.DAO.SubItemDao;
 import persist.DAO.TipoDao;
 
-import static leoluz.com.controlefinanceiro.activities.ActivityResumo.DATE_DIALOG_ID;
 
 public class ActivityCadastroLancamento extends AppCompatActivity implements View.OnClickListener {
     private AlertDialog alerta;
