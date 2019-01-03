@@ -95,7 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "idConta INTEGER not null, " +
                 "data String not null, " +
                 "valor REAL not null, " +
-
+                "validação Boolen not null, "+
                 "idFavoritoEstrutura INTEGER not null, " +
                 "favoritoEstruturaNome String not null, " +
                 "idFavoritoConta INTEGER not null," +
@@ -130,6 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "descricao TEXT not null, " +
                 "habilitado INTEGER not null," +
                 "favorito INTEGER not null," +
+                "data String not null," +
                 "saldo REAL," +
                 "CONSTRAINT fk_conta " +
                 "FOREIGN KEY (idBanco)" +

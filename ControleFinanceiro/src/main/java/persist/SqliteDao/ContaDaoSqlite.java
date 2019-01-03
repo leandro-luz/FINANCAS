@@ -33,6 +33,7 @@ public class ContaDaoSqlite extends GenericDaoSqlite implements ContaDao {
             values.put("saldo", conta.getSaldo().toString());
             values.put("habilitado", conta.getHabilitado());
             values.put("favorito", conta.getFavorito());
+            values.put("data", conta.getFavorito());
             id = db.insert("conta", null, values);
         }
         db.execSQL("PRAGMA foreign_keys = OFF");
