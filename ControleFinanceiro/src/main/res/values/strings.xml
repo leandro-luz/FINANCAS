@@ -63,9 +63,6 @@
     //Activity Favorito
     <string name="txt_favoritoNome">Nome:</string>
 
-    //Acttivity ListaFavorito
-    <string name="txt_cabecalho_listaFavorito">-----Id----------Nome----------------Opção-------</string>
-
     //Activity CadastroContas
     <string name="btn_banco">Banco</string>
     <string name="btn_conta">Conta</string>
@@ -81,8 +78,14 @@
     <string name="txt_Valor">O valor não foi preenchido!</string>
     <string name="txt_erroCadastro">Erro ao cadastrar lançamento!</string>
 
+    //Acttivity ListaFavorito
+    <string name="txt_cabecalho_listaFavorito">-----Id----------Nome----------------Opção-------</string>
+
     //Activity ListaLancamento
     <string name="txt_cabecalho_listaLancamento">Id - Estrutura - Conta - - - - - Data - - - - - - Valor  -  </string>
+
+    //Activity Resumo
+    <string name="txt_cabecalho_listaResumo">Id - - Banco - - - Conta - - - - - Saldo  -  </string>
 
     //Botão voltar - Comunss
     <string name="btn_voltar">Voltar</string>
