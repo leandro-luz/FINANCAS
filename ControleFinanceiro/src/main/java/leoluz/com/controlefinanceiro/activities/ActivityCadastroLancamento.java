@@ -31,6 +31,7 @@ import model.Lancamento;
 import model.SubItem;
 import model.Tipo;
 import persist.DAO.CategoriaDao;
+import persist.DAO.ContaDao;
 import persist.DAO.ElementoDao;
 import persist.DAO.FabricaDao;
 import persist.DAO.FavoritoDao;
@@ -192,6 +193,9 @@ public class ActivityCadastroLancamento extends AppCompatActivity implements Vie
                                         lancamento.setData(edData.getText().toString());
                                         lancamento.setValor(Float.parseFloat(edValor.getText().toString()));
                                         id = fabricaDao.salvar(lancamento);
+
+                                        ContaDao contaDao = FabricaDao.criarContaDao();
+                                        contaDao.alterarSaldoConta(lancamento);
                                     }
                                 }
                             }

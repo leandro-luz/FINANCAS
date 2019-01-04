@@ -11,6 +11,7 @@ import java.util.List;
 import model.Banco;
 import model.Carteira;
 import model.Conta;
+import model.Lancamento;
 import model.SubItem;
 import persist.DAO.CategoriaDao;
 import persist.DAO.ContaDao;
@@ -179,5 +180,52 @@ public class ContaDaoSqlite extends GenericDaoSqlite implements ContaDao {
             }
         }
         return conta;
+    }
+
+    @Override
+    public Conta buscarById(Integer id) {
+        Conta conta = new Conta();
+        SQLiteDatabase db = getReadableDB();
+        Cursor resultSet = db.rawQuery("select conta.idConta, conta.idBanco, banco.descricao,conta.descricao, " +
+                "conta.habilitado, conta.favorito, conta.saldo " +
+                "from conta inner join banco on(conta.idBanco = banco.idBanco) " +
+                "where conta.idConta = '" + id + "'", null);
+        if (resultSet != null) {
+            if (resultSet.moveToFirst()) {
+                do {
+                    conta.setIdConta(resultSet.getInt(0));
+                    conta.setIdBanco(resultSet.getInt(1));
+                    conta.setBancoNome(resultSet.getString(2));
+                    conta.setDescricao(resultSet.getString(3));
+                    conta.setHabilitado(resultSet.getInt(4));
+                    conta.setFavorito(resultSet.getInt(5));
+                    conta.setSaldo(resultSet.getFloat(6));
+                } while (resultSet.moveToNext());
+            }
+        }
+        return conta;
+    }
+
+    @Override
+    public void alterarSaldoConta(Lancamento lancamento) {
+        //buscar o valor do saldo
+        Conta conta = buscarById(lancamento.getConta().getIdConta());
+
+        //verificando se é despesa ou receita
+        int cat = lancamento.getCategoria().getIdCategoria();
+        float valor = lancamento.getValor() ;
+        if (cat == 1){
+            valor = conta.getSaldo() + (valor * -1);
+        }else{
+            valor = conta.getSaldo() + valor;
+        }
+        SQLiteDatabase db = getWritebleDB();
+        ContentValues values = new ContentValues();
+
+        values.put("saldo", valor);
+        String where = "idConta = ?";
+        String argumentos[] = {String.valueOf(lancamento.getConta().getIdConta())};
+
+        long id = db.update("conta", values, where, argumentos);
     }
 }

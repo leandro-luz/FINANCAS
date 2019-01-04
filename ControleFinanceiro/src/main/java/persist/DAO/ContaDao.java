@@ -5,6 +5,7 @@ import java.util.List;
 import model.Banco;
 import model.Carteira;
 import model.Conta;
+import model.Lancamento;
 
 public interface ContaDao {
     long    salvar(Conta p);
@@ -16,4 +17,6 @@ public interface ContaDao {
     List<Conta> listarTodosHabilitados();
     List<String> listarTodosString();
     Conta buscarByNome(String nome);
+    void alterarSaldoConta(Lancamento lancamento);
+    public Conta buscarById(Integer id);
 }
