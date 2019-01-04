@@ -207,7 +207,7 @@ public class ContaDaoSqlite extends GenericDaoSqlite implements ContaDao {
     }
 
     @Override
-    public void alterarSaldoConta(Lancamento lancamento) {
+    public void alterarSaldoConta(Lancamento lancamento, int opcao) {
         //buscar o valor do saldo
         Conta conta = buscarById(lancamento.getConta().getIdConta());
 
@@ -215,9 +215,9 @@ public class ContaDaoSqlite extends GenericDaoSqlite implements ContaDao {
         int cat = lancamento.getCategoria().getIdCategoria();
         float valor = lancamento.getValor() ;
         if (cat == 1){
-            valor = conta.getSaldo() + (valor * -1);
+            valor = conta.getSaldo() + (valor * -1 * opcao);
         }else{
-            valor = conta.getSaldo() + valor;
+            valor = conta.getSaldo() + (valor * opcao);
         }
         SQLiteDatabase db = getWritebleDB();
         ContentValues values = new ContentValues();

@@ -17,6 +17,6 @@ public interface ContaDao {
     List<Conta> listarTodosHabilitados();
     List<String> listarTodosString();
     Conta buscarByNome(String nome);
-    void alterarSaldoConta(Lancamento lancamento);
+    void alterarSaldoConta(Lancamento lancamento, int opcao);
     public Conta buscarById(Integer id);
 }

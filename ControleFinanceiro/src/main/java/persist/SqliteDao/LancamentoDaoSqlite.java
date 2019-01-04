@@ -157,4 +157,19 @@ public class LancamentoDaoSqlite extends GenericDaoSqlite implements LancamentoD
     public List<String> listarTodosString() {
         return null;
     }
+
+    @Override
+    public Float buscarValorById(int id) {
+        Float valor = null;
+
+        SQLiteDatabase db = getReadableDB();
+        Cursor resultSet = db.rawQuery("select valor from lancamento where idLancamento = '" + id + "'" , null);
+        if (resultSet != null) {
+            if (resultSet.moveToFirst()) {
+                valor = resultSet.getFloat(0);
+            }
+        }
+
+        return valor;
+    }
 }

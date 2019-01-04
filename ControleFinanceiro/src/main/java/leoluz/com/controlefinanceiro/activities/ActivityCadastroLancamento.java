@@ -195,7 +195,7 @@ public class ActivityCadastroLancamento extends AppCompatActivity implements Vie
                                         id = fabricaDao.salvar(lancamento);
 
                                         ContaDao contaDao = FabricaDao.criarContaDao();
-                                        contaDao.alterarSaldoConta(lancamento);
+                                        contaDao.alterarSaldoConta(lancamento, 1);
                                     }
                                 }
                             }
@@ -206,7 +206,19 @@ public class ActivityCadastroLancamento extends AppCompatActivity implements Vie
                         LancamentoDao lancamentoDao = FabricaDao.criarLancamentoDao();
                         lancamento.setData(edData.getText().toString());
                         lancamento.setValor(Float.parseFloat(edValor.getText().toString()));
+
+                        Float valorAntigo = lancamentoDao.buscarValorById(lancamento.getIdLancamento());
                         id = lancamentoDao.alterar(lancamento);
+
+                        //alterar o saldo com o valor atual
+                        ContaDao contaDao = FabricaDao.criarContaDao();
+                        contaDao.alterarSaldoConta(lancamento, 1);
+
+                        //buscar o valor antigo e alterar o lancamento como valor antigo
+                        lancamento.setValor(valorAntigo);
+                        //alterar o saldo com o valor antigo
+                        contaDao.alterarSaldoConta(lancamento, -1);
+
                         break;
                 }
 
@@ -282,8 +294,18 @@ public class ActivityCadastroLancamento extends AppCompatActivity implements Vie
                 break;
 
             case R.id.btnExcluir:
-                LancamentoDao fabricaDao = FabricaDao.criarLancamentoDao();
-                id = fabricaDao.excluir(lancamento);
+                LancamentoDao lancamentoDao = FabricaDao.criarLancamentoDao();
+                ContaDao contaDao = FabricaDao.criarContaDao();
+                Float valorAntigo = lancamentoDao.buscarValorById(lancamento.getIdLancamento());
+
+                id = lancamentoDao.excluir(lancamento);
+
+                //buscar o valor antigo e alterar o lancamento como valor antigo
+                lancamento.setValor(valorAntigo);
+                //alterar o saldo com o valor antigo
+                contaDao.alterarSaldoConta(lancamento, -1);
+
+                
                 if (id != -1) {
                     novoCadastro();
                 } else {

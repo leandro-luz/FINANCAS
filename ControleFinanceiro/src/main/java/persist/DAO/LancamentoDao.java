@@ -13,4 +13,5 @@ public interface LancamentoDao {
     long   alterar(Lancamento p);
     List<Lancamento> listarTodos();
     List<String> listarTodosString();
+    Float buscarValorById(int id);
 }
