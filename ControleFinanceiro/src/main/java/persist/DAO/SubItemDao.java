@@ -18,4 +18,5 @@ public interface SubItemDao {
     SubItem buscarByNome(String nome);
     List<SubItem> listarTodosReferencia(Integer cat, Integer tip, Integer itm);
     List<String> listarTodosString();
+    Integer contarDescricao(Integer categoria, Integer tipo, Integer item, String descricao);
 }

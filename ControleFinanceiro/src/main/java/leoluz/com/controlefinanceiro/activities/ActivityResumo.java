@@ -19,6 +19,7 @@ import java.util.List;
 import adapter.BancoAdapterCompleto;
 import adapter.CategoriaAdapterCompleto;
 import adapter.ContaAdapterCompleto;
+import adapter.ContaAdapterSaldo;
 import adapter.ElementoAdapterCompleto;
 import adapter.ItemAdapterCompleto;
 import adapter.SubItemAdapterCompleto;
@@ -48,6 +49,13 @@ public class ActivityResumo extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         listView = new ListView(this);
         setContentView(listView);
+
+
+        TextView txt1 = (TextView) findViewById(R.id.txtId);
+        TextView txt2 = (TextView) findViewById(R.id.txtCategoria);
+        TextView txt3 = (TextView) findViewById(R.id.txtTipo);
+        TextView txt4 = (TextView) findViewById(R.id.txtItem);
+
 
         //alterando o titulo da tela
         setTitle("SALDO DAS CONTAS");

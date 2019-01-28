@@ -18,9 +18,10 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
         SQLiteDatabase db = getWritebleDB();
         db.execSQL("PRAGMA foreign_keys = ON");
         long id;
-        List<String> myArray = new ArrayList<>();
-        myArray = this.listarTodosString();
-        if (myArray.contains(c.getElemento().getDescricao().toUpperCase())) {
+        Integer contador = contarDescricao(c.getCategoria().getIdCategoria(),
+                c.getTipo().getIdTipo(), c.getItem().getIdItem(),
+                c.getSubitem().getIdSubItem(), c.getElemento().getDescricao().toUpperCase());
+        if (contador > 0) {
             id = -1;
         } else {
             ContentValues values = new ContentValues();
@@ -168,11 +169,12 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
     public List<Elemento> listarTodosNome() {
         List<Elemento> myArray = new ArrayList<>();
         SQLiteDatabase db = getReadableDB();
-        Cursor resultSet = db.rawQuery("select elemento.idElemento, elemento.habilitado, elemento.descricao, categoria.descricao, tipo.descricao, item.descricao, subitem.descricao\n" +
-                "from elemento inner \n" +
-                "join categoria On elemento.idCategoria = categoria.idCategoria\n" +
-                "join tipo On elemento.idTipo = tipo.idTipo\n" +
-                "join item On elemento.idItem = item.idItem\n" +
+        Cursor resultSet = db.rawQuery("select elemento.idElemento, elemento.habilitado, elemento.descricao, " +
+                "categoria.descricao, tipo.descricao, item.descricao, subitem.descricao, categoria.idCategoria, " +
+                "tipo.idTipo, item.idItem, subitem.idSubItem from elemento inner " +
+                "join categoria On elemento.idCategoria = categoria.idCategoria " +
+                "join tipo On elemento.idTipo = tipo.idTipo " +
+                "join item On elemento.idItem = item.idItem " +
                 "join subitem On elemento.idSubItem = subitem.idSubItem", null);
         if (resultSet != null) {
             if (resultSet.moveToFirst()) {
@@ -185,6 +187,10 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
                     elemento.setTipoNome(resultSet.getString(4));
                     elemento.setItemNome(resultSet.getString(5));
                     elemento.setSubitemNome(resultSet.getString(6));
+                    elemento.setIdCategoria(resultSet.getInt(7));
+                    elemento.setIdTipo(resultSet.getInt(8));
+                    elemento.setIdItem(resultSet.getInt(9));
+                    elemento.setIdSubItem(resultSet.getInt(10));
 
                     myArray.add(elemento);
                 } while (resultSet.moveToNext());
@@ -235,5 +241,25 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
             }
         }
         return myArray;
+    }
+
+    @Override
+    public Integer contarDescricao(Integer categoria, Integer tipo, Integer item, Integer subitem, String descricao) {
+        Integer contador = 0;
+        SQLiteDatabase db = getReadableDB();
+        Cursor resultSet = db.rawQuery("select count(*) from elemento " +
+                "where elemento.idCategoria = " + categoria +
+                " and elemento.idTipo = " + tipo +
+                " and elemento.idItem = " + item +
+                " and elemento.idSubItem = "+ subitem +
+                " and elemento.descricao = '" + descricao + "'", null);
+        if (resultSet != null) {
+            if (resultSet.moveToFirst()) {
+                do {
+                    contador = resultSet.getInt(0);
+                } while (resultSet.moveToNext());
+            }
+        }
+        return contador;
     }
 }

@@ -85,7 +85,7 @@
     <string name="txt_cabecalho_listaLancamento">Id - Estrutura - Conta - - - - - Data - - - - - - Valor  -  </string>
 
     //Activity Resumo
-    <string name="txt_cabecalho_listaResumo">Id - - Banco - - - Conta - - - - - Saldo  -  </string>
+    <string name="txt_cabecalho_listaResumo">Id --- Banco --- Conta --------- Saldo -------------</string>
 
     //Botão voltar - Comunss
     <string name="btn_voltar">Voltar</string>

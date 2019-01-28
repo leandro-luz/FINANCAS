@@ -18,5 +18,6 @@ public interface ContaDao {
     List<String> listarTodosString();
     Conta buscarByNome(String nome);
     void alterarSaldoConta(Lancamento lancamento, int opcao);
-    public Conta buscarById(Integer id);
+    Conta buscarById(Integer id);
+    Integer contarDescricao(Integer conta, String descricao);
 }

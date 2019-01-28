@@ -22,10 +22,9 @@ public class ContaDaoSqlite extends GenericDaoSqlite implements ContaDao {
         SQLiteDatabase db = getWritebleDB();
         db.execSQL("PRAGMA foreign_keys = ON");
         long id;
-        List<String> myArray = new ArrayList<>();
-        myArray = this.listarTodosString();
 
-        if (myArray.size() > 0 && myArray.contains(conta.getDescricao().toUpperCase())) {
+        Integer contador = contarDescricao(conta.getIdBanco(), conta.getDescricao().toUpperCase());
+        if (contador > 0) {
             id = -1;
         } else {
             ContentValues values = new ContentValues();
@@ -34,7 +33,6 @@ public class ContaDaoSqlite extends GenericDaoSqlite implements ContaDao {
             values.put("saldo", conta.getSaldo().toString());
             values.put("habilitado", conta.getHabilitado());
             values.put("favorito", conta.getFavorito());
-            values.put("data", conta.getFavorito());
             id = db.insert("conta", null, values);
         }
         db.execSQL("PRAGMA foreign_keys = OFF");
@@ -43,7 +41,6 @@ public class ContaDaoSqlite extends GenericDaoSqlite implements ContaDao {
 
     @Override
     public void criar(Conta p) {
-
     }
 
     @Override
@@ -228,4 +225,23 @@ public class ContaDaoSqlite extends GenericDaoSqlite implements ContaDao {
 
         long id = db.update("conta", values, where, argumentos);
     }
+
+    @Override
+    public Integer contarDescricao(Integer conta, String descricao) {
+        Integer contador = 0;
+        SQLiteDatabase db = getReadableDB();
+        Cursor resultSet = db.rawQuery("select count(*) from conta " +
+                "where conta.idBanco = " + conta +
+                " and conta.descricao = '" + descricao + "'", null);
+        if (resultSet != null) {
+            if (resultSet.moveToFirst()) {
+                do {
+                    contador = resultSet.getInt(0);
+                } while (resultSet.moveToNext());
+            }
+        }
+        return contador;
+    }
+
+
 }

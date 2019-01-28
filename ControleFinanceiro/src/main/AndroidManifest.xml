@@ -61,6 +61,8 @@
         <activity
             android:name=".activities.ActivityListaLancamento"
             android:launchMode="singleInstance"></activity>
+
+
     </application>
 
 </manifest>

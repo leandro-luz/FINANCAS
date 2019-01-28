@@ -21,10 +21,9 @@ public class ItemDaoSqlite extends GenericDaoSqlite implements ItemDao {
         SQLiteDatabase db = getWritebleDB();
         db.execSQL("PRAGMA foreign_keys = OFF");
         long id;
-        List<String> myArray = new ArrayList<>();
-        myArray = listarTodosString();
-
-        if (myArray.contains(c.getItem().getDescricao().toUpperCase())) {
+        Integer contador = contarDescricao(c.getCategoria().getIdCategoria(),
+                c.getTipo().getIdTipo(), c.getItem().getDescricao().toUpperCase());
+        if (contador > 0) {
             id = -1;
         } else {
             ContentValues values = new ContentValues();
@@ -149,8 +148,9 @@ public class ItemDaoSqlite extends GenericDaoSqlite implements ItemDao {
     public List<Item> listarTodosNome() {
         List<Item> myArray = new ArrayList<>();
         SQLiteDatabase db = getReadableDB();
-        Cursor resultSet = db.rawQuery("select item.idItem, item.habilitado, item.descricao, categoria.descricao, tipo.descricao\n" +
-                "from item inner join categoria On item.idCategoria = categoria.idCategoria \n" +
+        Cursor resultSet = db.rawQuery("select item.idItem, item.habilitado, item.descricao, categoria.descricao, " +
+                "tipo.descricao, categoria.IdCategoria, tipo.IdTipo " +
+                "from item inner join categoria On item.idCategoria = categoria.idCategoria " +
                 "join tipo On item.idTipo = tipo.idTipo", null);
         if (resultSet != null) {
             if (resultSet.moveToFirst()) {
@@ -161,6 +161,8 @@ public class ItemDaoSqlite extends GenericDaoSqlite implements ItemDao {
                     item.setDescricao(resultSet.getString(2));
                     item.setCategoriaNome(resultSet.getString(3));
                     item.setTipoNome(resultSet.getString(4));
+                    item.setIdCategoria(resultSet.getInt(5));
+                    item.setIdTipo(resultSet.getInt(6));
                     myArray.add(item);
                 } while (resultSet.moveToNext());
             }
@@ -181,5 +183,23 @@ public class ItemDaoSqlite extends GenericDaoSqlite implements ItemDao {
             }
         }
         return myArray;
+    }
+
+    @Override
+    public Integer contarDescricao(Integer categoria, Integer tipo, String descricao) {
+        Integer contador = 0;
+        SQLiteDatabase db = getReadableDB();
+        Cursor resultSet = db.rawQuery("select count(*) from item " +
+                "where item.idCategoria = " + categoria +
+                " and item.idTipo = " + tipo +
+                " and item.descricao = '" + descricao + "'", null);
+        if (resultSet != null) {
+            if (resultSet.moveToFirst()) {
+                do {
+                    contador = resultSet.getInt(0);
+                } while (resultSet.moveToNext());
+            }
+        }
+        return contador;
     }
 }

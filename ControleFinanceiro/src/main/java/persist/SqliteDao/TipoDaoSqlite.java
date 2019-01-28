@@ -22,10 +22,8 @@ public class TipoDaoSqlite extends GenericDaoSqlite implements TipoDao {
         SQLiteDatabase db = getWritebleDB();
         db.execSQL("PRAGMA foreign_keys = ON");
         long id;
-        List<String> myArray = new ArrayList<>();
-        myArray = listarTodosString();
-
-        if (myArray.contains(c.getTipo().getDescricao().toUpperCase())) {
+        Integer contador = contarDescricao(c.getCategoria().getIdCategoria(), c.getTipo().getDescricao().toUpperCase());
+        if (contador > 0) {
             id = -1;
         } else {
             ContentValues values = new ContentValues();
@@ -130,7 +128,7 @@ public class TipoDaoSqlite extends GenericDaoSqlite implements TipoDao {
     public List<Tipo> listarTodosNome() {
         List<Tipo> myArray = new ArrayList<>();
         SQLiteDatabase db = getReadableDB();
-        Cursor resultSet = db.rawQuery("select tipo.idTipo, tipo.habilitado, tipo.descricao, categoria.descricao\n" +
+        Cursor resultSet = db.rawQuery("select tipo.idTipo, tipo.habilitado, tipo.descricao, categoria.idCategoria, categoria.descricao " +
                 "from tipo inner join categoria On tipo.idCategoria = categoria.idCategoria", null);
         if (resultSet != null) {
             if (resultSet.moveToFirst()) {
@@ -139,7 +137,8 @@ public class TipoDaoSqlite extends GenericDaoSqlite implements TipoDao {
                     tipo.setIdTipo(resultSet.getInt(0));
                     tipo.setHabilitado(resultSet.getInt(1));
                     tipo.setDescricao(resultSet.getString(2));
-                    tipo.setCategoriaNome(resultSet.getString(3));
+                    tipo.setIdcategoria(resultSet.getInt(3));
+                    tipo.setCategoriaNome(resultSet.getString(4));
                     myArray.add(tipo);
                 } while (resultSet.moveToNext());
             }
@@ -179,5 +178,21 @@ public class TipoDaoSqlite extends GenericDaoSqlite implements TipoDao {
             }
         }
         return myArray;
+    }
+
+
+    @Override
+    public Integer contarDescricao(Integer categoria, String descricao) {
+        Integer contador = 0;
+        SQLiteDatabase db = getReadableDB();
+        Cursor resultSet = db.rawQuery("select count(*) from tipo where tipo.idCategoria = " + categoria + " and tipo.descricao = '" + descricao + "'", null);
+        if (resultSet != null) {
+            if (resultSet.moveToFirst()) {
+                do {
+                   contador = resultSet.getInt(0);
+               } while (resultSet.moveToNext());
+            }
+        }
+        return contador;
     }
 }

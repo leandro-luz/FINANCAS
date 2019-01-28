@@ -369,10 +369,9 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                         id = tipoDao.salvar(lancamento);
                                         break;
                                     case "update":
-                                        List<String> lista = tipoDao.listarTodosString();
-                                        if ((!lancamento.getTipo().getDescricao().equalsIgnoreCase(edTipo.getText().toString().toUpperCase()) &&
-                                                lista.contains(edTipo.getText().toString().toUpperCase()))) {
-                                            Toast.makeText(this, "A descrição já existe!", Toast.LENGTH_SHORT).show();
+                                        Integer contador = tipoDao.contarDescricao(lancamento.getTipo().getIdCategoria(), edTipo.getText().toString().toUpperCase());
+                                        if(contador > 0){
+                                            id = Long.parseLong( String.valueOf(contador*-1));
                                         } else {
                                             //verifica se está habilitado
                                             if (swt_Habilitado.isChecked()) {
@@ -417,10 +416,11 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                             id = itemDao.salvar(lancamento);
                                             break;
                                         case "update":
-                                            List<String> lista = itemDao.listarTodosString();
-                                            if ((!lancamento.getItem().getDescricao().equalsIgnoreCase(edItem.getText().toString().toUpperCase()) &&
-                                                    lista.contains(edItem.getText().toString().toUpperCase()))) {
-                                                Toast.makeText(this, "A descrição já existe!", Toast.LENGTH_SHORT).show();
+                                            Integer contador = itemDao.contarDescricao(lancamento.getItem().getIdCategoria(),
+                                                    lancamento.getItem().getIdTipo(),
+                                                    edItem.getText().toString().toUpperCase());
+                                            if(contador > 0){
+                                                id = Long.parseLong( String.valueOf(contador*-1));
                                             } else {
                                                 //verifica se está habilitado
                                                 if (swt_Habilitado.isChecked()) {
@@ -489,13 +489,14 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                             case "update":
                                                 //verificar se a descrição da tela está diferente da que esta no banco
                                                 //se for diferente verifica se a descriação já não existe
-                                                List<String> lista = subItemDao.listarTodosString();
-                                                if ((!lancamento.getSubitem().getDescricao().equalsIgnoreCase(edSubitem.getText().toString().toUpperCase()) &&
-                                                        lista.contains(edSubitem.getText().toString().toUpperCase()))) {
+                                                Integer contador = subItemDao.contarDescricao(lancamento.getSubitem().getIdCategoria(),
+                                                        lancamento.getSubitem().getIdTipo(),
+                                                        lancamento.getSubitem().getIdItem(),
+                                                        edSubitem.getText().toString().toUpperCase());
+                                                if(contador > 0){
+                                                    id = Long.parseLong( String.valueOf(contador*-1));
                                                     favoritoAlterado = false;
                                                     excluirFavorito = false;
-                                                    Toast.makeText(this, "A descrição já existe!", Toast.LENGTH_SHORT).show();
-
                                                 } else {
                                                     //verifica se está habilitado
                                                     if (swt_Habilitado.isChecked()) {
@@ -556,11 +557,14 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                                     id = elementoDao.salvar(lancamento);
                                                     break;
                                                 case "update":
-                                                    List<String> lista = elementoDao.listarTodosString();
-                                                    if ((!lancamento.getElemento().getDescricao().equalsIgnoreCase(edElemento.getText().toString().toUpperCase()) &&
-                                                            lista.contains(edElemento.getText().toString().toUpperCase()))) {
-                                                        Toast.makeText(this, "A descrição já existe!", Toast.LENGTH_SHORT).show();
-                                                    } else {
+                                                    Integer contador = elementoDao.contarDescricao(lancamento.getElemento().getIdCategoria(),
+                                                            lancamento.getElemento().getIdTipo(),
+                                                            lancamento.getElemento().getIdItem(),
+                                                            lancamento.getElemento().getIdSubItem(),
+                                                            edElemento.getText().toString().toUpperCase());
+                                                    if(contador > 0){
+                                                        id = Long.parseLong( String.valueOf(contador*-1));
+                                               } else {
                                                         //verifica se está habilitado
                                                         if (swt_Habilitado.isChecked()) {
                                                             elemento.setHabilitado(1);
@@ -626,8 +630,7 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                 startActivity(it);
                 this.finish();
                 break;
-
-            case R.id.btnCategoria:
+        case R.id.btnCategoria:
                 Intent listcat = new Intent(this, ActivityLista.class);
                 lancamento.setTipo(null);
                 lancamento.setItem(null);

@@ -48,6 +48,7 @@ public class BancoAdapterCompleto extends BaseAdapter{
         //Resources res = ctx.getResources();
         txtId.setText(Integer.toString(banco.getIdBanco()));
         txtBanco.setText(banco.getDescricao());
+
         if(banco.getHabilitado()==1){
             txtId.setTextColor(Color.BLUE);
             txtBanco.setTextColor(Color.BLUE);

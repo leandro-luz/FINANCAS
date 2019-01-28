@@ -305,7 +305,7 @@ public class ActivityCadastroLancamento extends AppCompatActivity implements Vie
                 //alterar o saldo com o valor antigo
                 contaDao.alterarSaldoConta(lancamento, -1);
 
-                
+
                 if (id != -1) {
                     novoCadastro();
                 } else {

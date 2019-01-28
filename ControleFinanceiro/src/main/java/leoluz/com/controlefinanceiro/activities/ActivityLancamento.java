@@ -11,7 +11,7 @@ public class ActivityLancamento extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.resumo);
+        setContentView(R.layout.lancamento);
 
 //alterando o titulo da tela
         setTitle("MENU");

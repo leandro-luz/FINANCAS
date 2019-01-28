@@ -15,4 +15,5 @@ public interface ItemDao {
     List<Item> listarTodosNome();
     List<Item> listarTodosReferencia(Integer cat, Integer tip);
     List<String> listarTodosString();
+    Integer contarDescricao(Integer categoria, Integer tipo, String descricao);
 }

@@ -183,6 +183,7 @@ public class ActivityCadastroContas extends AppCompatActivity implements View.On
                                     }
                                     //verificar se a descrição da tela está diferente da que esta no banco
                                     //se for diferente verifica se a descriação já não existe
+
                                     List<String> lista = bancoDao.listarTodosString();
                                     if ((!carteira.getBanco().getDescricao().equalsIgnoreCase(edBanco.getText().toString().toUpperCase()) &&
                                             lista.contains(edBanco.getText().toString().toUpperCase()))) {
@@ -245,13 +246,12 @@ public class ActivityCadastroContas extends AppCompatActivity implements View.On
                                         }
                                         //verificar se a descrição da tela está diferente da que esta no banco
                                         //se for diferente verifica se a descriação já não existe
-                                        List<String> lista = contaDao.listarTodosString();
-                                        if ((!carteira.getConta().getDescricao().equalsIgnoreCase(edConta.getText().toString().toUpperCase()) &&
-                                                lista.contains(edConta.getText().toString().toUpperCase()))) {
+
+                                        Integer contador = contaDao.contarDescricao(carteira.getConta().getIdBanco(), edConta.getText().toString().toUpperCase());
+                                        if(contador > 0){
+                                            id = Long.parseLong( String.valueOf(contador*-1));
                                             favoritoAlterado = false;
                                             excluirFavorito = false;
-                                            Toast.makeText(this, "A descrição já existe!", Toast.LENGTH_SHORT).show();
-
                                         } else {
                                             carteira.getConta().setDescricao(edConta.getText().toString());
                                             carteira.getConta().setSaldo(Float.valueOf(edSaldo.getText().toString()));

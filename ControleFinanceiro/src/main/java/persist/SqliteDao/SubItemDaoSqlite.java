@@ -20,9 +20,12 @@ public class SubItemDaoSqlite extends GenericDaoSqlite implements SubItemDao {
         SQLiteDatabase db = getWritebleDB();
         db.execSQL("PRAGMA foreign_keys = ON");
         long id;
-        List<String> myArray = new ArrayList<>();
-        myArray = this.listarTodosString();
-        if (myArray.contains(c.getSubitem().getDescricao().toUpperCase())) {
+
+        Integer contador = contarDescricao(c.getCategoria().getIdCategoria(),
+                c.getTipo().getIdTipo(), c.getItem().getIdItem(),
+                c.getSubitem().getDescricao().toUpperCase());
+
+        if (contador > 0) {
             id = -1;
         } else {
             ContentValues values = new ContentValues();
@@ -166,10 +169,11 @@ public class SubItemDaoSqlite extends GenericDaoSqlite implements SubItemDao {
     public List<SubItem> listarTodosNome() {
         List<SubItem> myArray = new ArrayList<>();
         SQLiteDatabase db = getReadableDB();
-        Cursor resultSet = db.rawQuery("select subitem.idSubItem, subitem.habilitado, subitem.favorito, subitem.descricao, categoria.descricao, tipo.descricao, item.descricao\n" +
-                "from subitem inner \n" +
-                "join categoria On subitem.idCategoria = categoria.idCategoria\n" +
-                "join tipo On subitem.idTipo = tipo.idTipo\n" +
+        Cursor resultSet = db.rawQuery("select subitem.idSubItem, subitem.habilitado, subitem.favorito, " +
+                "subitem.descricao, categoria.descricao, tipo.descricao, item.descricao, categoria.idCategoria," +
+                "tipo.idTipo, item.idItem from subitem inner " +
+                "join categoria On subitem.idCategoria = categoria.idCategoria " +
+                "join tipo On subitem.idTipo = tipo.idTipo " +
                 "join item On subitem.idItem = item.idItem", null);
         if (resultSet != null) {
             if (resultSet.moveToFirst()) {
@@ -182,6 +186,9 @@ public class SubItemDaoSqlite extends GenericDaoSqlite implements SubItemDao {
                     subitem.setCategoriaNome(resultSet.getString(4));
                     subitem.setTipoNome(resultSet.getString(5));
                     subitem.setItemNome(resultSet.getString(6));
+                    subitem.setIdCategoria(resultSet.getInt(7));
+                    subitem.setIdTipo(resultSet.getInt(8));
+                    subitem.setIdItem(resultSet.getInt(9));
 
                     myArray.add(subitem);
                 } while (resultSet.moveToNext());
@@ -245,5 +252,24 @@ public class SubItemDaoSqlite extends GenericDaoSqlite implements SubItemDao {
             }
         }
         return myArray;
+    }
+
+    @Override
+    public Integer contarDescricao(Integer categoria, Integer tipo, Integer item, String descricao) {
+        Integer contador = 0;
+        SQLiteDatabase db = getReadableDB();
+        Cursor resultSet = db.rawQuery("select count(*) from subitem " +
+                "where subitem.idCategoria = " + categoria +
+                " and subitem.idTipo = " + tipo +
+                " and subitem.idItem = " + item +
+                " and subitem.descricao = '" + descricao + "'", null);
+        if (resultSet != null) {
+            if (resultSet.moveToFirst()) {
+                do {
+                    contador = resultSet.getInt(0);
+                } while (resultSet.moveToNext());
+            }
+        }
+        return contador;
     }
 }
