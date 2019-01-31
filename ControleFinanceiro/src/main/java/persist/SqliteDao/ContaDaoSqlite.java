@@ -82,8 +82,6 @@ public class ContaDaoSqlite extends GenericDaoSqlite implements ContaDao {
             SQLiteDatabase db = getWritebleDB();
             ContentValues values = new ContentValues();
             values.put("descricao", carteira.getConta().getDescricao().toUpperCase());
-            values.put("habilitado",carteira.getConta().getHabilitado());
-            values.put("favorito", carteira.getConta().getFavorito());
             values.put("saldo", carteira.getConta().getSaldo());
             String where = "idConta = ?";
             String argumentos[] = {String.valueOf(carteira.getConta().getIdConta())};
@@ -241,6 +239,20 @@ public class ContaDaoSqlite extends GenericDaoSqlite implements ContaDao {
             }
         }
         return contador;
+    }
+
+    @Override
+    public long alterarStatus(Carteira carteira) {
+        long id = 0;
+        SQLiteDatabase db = getWritebleDB();
+        ContentValues values = new ContentValues();
+        values.put("habilitado",carteira.getConta().getHabilitado());
+        values.put("favorito", carteira.getConta().getFavorito());
+        String where = "idConta = ?";
+        String argumentos[] = {String.valueOf(carteira.getConta().getIdConta())};
+        id = db.update("conta", values, where, argumentos);
+        return id;
+
     }
 
 

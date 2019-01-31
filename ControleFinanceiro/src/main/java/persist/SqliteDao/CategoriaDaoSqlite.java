@@ -20,10 +20,8 @@ public class CategoriaDaoSqlite extends GenericDaoSqlite implements CategoriaDao
         SQLiteDatabase db = getWritebleDB();
         db.execSQL("PRAGMA foreign_keys = ON");
         long id;
-        List<String> myArray = new ArrayList<>();
-        myArray = this.listarTodosString();
-
-        if (myArray.contains(lancamento.getCategoria().getDescricao().toUpperCase())) {
+        Integer contador = contarDescricao(lancamento.getCategoria().getDescricao().toUpperCase());
+        if (contador > 0) {
             id = -1;
         } else {
             ContentValues values = new ContentValues();
@@ -60,17 +58,13 @@ public class CategoriaDaoSqlite extends GenericDaoSqlite implements CategoriaDao
         SQLiteDatabase db = getWritebleDB();
         ContentValues values = new ContentValues();
         values.put("descricao", lancamento.getCategoria().getDescricao().toUpperCase());
-        values.put("habilitado", lancamento.getCategoria().getHabilitado());
-        values.put("incremento", lancamento.getCategoria().getIncremento());
         String where = "idCategoria = ?";
         String argumentos[] = {String.valueOf(lancamento.getCategoria().getIdCategoria())};
         id = db.update("categoria", values, where, argumentos);
-
         return id;
     }
 
     public long excluir(Lancamento lancamento) {
-
         long quantidade, id;
         quantidade = buscar(lancamento);
         //verificar se não existe nos lançamentos
@@ -140,6 +134,34 @@ public class CategoriaDaoSqlite extends GenericDaoSqlite implements CategoriaDao
             }
         }
         return myArray;
+    }
+
+    @Override
+    public Integer contarDescricao(String descricao) {
+        Integer contador = 0;
+        SQLiteDatabase db = getReadableDB();
+        Cursor resultSet = db.rawQuery("select count(*) from categoria where categoria.descricao = '" + descricao + "'", null);
+        if (resultSet != null) {
+            if (resultSet.moveToFirst()) {
+                do {
+                    contador = resultSet.getInt(0);
+                } while (resultSet.moveToNext());
+            }
+        }
+        return contador;
+    }
+
+    @Override
+    public long alterarStatus(Lancamento lancamento) {
+        long id = 0;
+        SQLiteDatabase db = getWritebleDB();
+        ContentValues values = new ContentValues();
+        values.put("habilitado", lancamento.getCategoria().getHabilitado());
+        values.put("incremento", lancamento.getCategoria().getIncremento());
+        String where = "idCategoria = ?";
+        String argumentos[] = {String.valueOf(lancamento.getCategoria().getIdCategoria())};
+        id = db.update("categoria", values, where, argumentos);
+        return id;
     }
 
 }

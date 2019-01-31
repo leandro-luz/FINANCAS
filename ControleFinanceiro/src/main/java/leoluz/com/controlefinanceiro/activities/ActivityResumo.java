@@ -61,7 +61,8 @@ public class ActivityResumo extends AppCompatActivity  {
         setTitle("SALDO DAS CONTAS");
 
         TextView txtHeader = new TextView(this);
-        txtHeader.setText(R.string.txt_cabecalho_listaResumo);
+        txtHeader.setText("Id ------ Banco -------------- Conta -------------- Saldo -----------");
+        txtHeader.setTextSize(10);
         listView.addHeaderView(txtHeader);
 
         try {

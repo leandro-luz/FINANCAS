@@ -29,6 +29,7 @@ public class FavoritoDaoSqlite extends GenericDaoSqlite implements FavoritoDao {
         values.put("idTipo", favorito.getIdTipo());
         values.put("idItem", favorito.getIdItem());
         values.put("idSubItem", favorito.getIdSubItem());
+        values.put("idElemento", favorito.getIdElemento());
         values.put("idBanco", favorito.getIdBanco());
         values.put("idConta", favorito.getIdConta());
         id = db.insert("favorito", null, values);
@@ -156,7 +157,7 @@ public class FavoritoDaoSqlite extends GenericDaoSqlite implements FavoritoDao {
     public List<Favorito> listarTodos() {
         List<Favorito> myArray = new ArrayList<>();
         SQLiteDatabase db = getReadableDB();
-        Cursor resultSet = db.rawQuery("select idFavorito, opcao, descricao from favorito", null);
+        Cursor resultSet = db.rawQuery("select idFavorito, opcao, descricao, idOpcao from favorito", null);
         if (resultSet != null) {
             if (resultSet.moveToFirst()) {
                 do {
@@ -164,6 +165,7 @@ public class FavoritoDaoSqlite extends GenericDaoSqlite implements FavoritoDao {
                     favorito.setIdFavorito(resultSet.getInt(0));
                     favorito.setOpcao(resultSet.getString(1));
                     favorito.setDescricao(resultSet.getString(2));
+                    favorito.setIdOpcao(resultSet.getInt(3));
                     myArray.add(favorito);
                 } while (resultSet.moveToNext());
             }

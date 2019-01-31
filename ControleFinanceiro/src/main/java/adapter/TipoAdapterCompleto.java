@@ -41,7 +41,7 @@ public class TipoAdapterCompleto extends BaseAdapter{
     @Override
     public View getView(int position, View convertview, ViewGroup parent) {
         Tipo tipo = tipos.get(position);
-        View linha = LayoutInflater.from(ctx).inflate(R.layout.listacompleta, parent, false);
+        View linha = LayoutInflater.from(ctx).inflate(R.layout.listatipo, parent, false);
         TextView txtId = (TextView) linha.findViewById(R.id.txtId);
         TextView txtCategoria = (TextView) linha.findViewById(R.id.txtCategoria);
         TextView txtTipo = (TextView) linha.findViewById(R.id.txtTipo);

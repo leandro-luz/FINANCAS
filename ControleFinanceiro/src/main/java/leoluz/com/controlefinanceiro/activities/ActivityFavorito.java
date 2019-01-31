@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import leoluz.com.controlefinanceiro.R;
 import model.Carteira;
 import model.Conta;
+import model.Elemento;
 import model.Favorito;
 import model.Lancamento;
 import model.SubItem;
@@ -30,6 +31,7 @@ public class ActivityFavorito extends AppCompatActivity implements View.OnClickL
     TextView txtTipo;
     TextView txtItem;
     TextView txtSubItem;
+    TextView txtElemento;
     TextView txtBanco;
     TextView txtConta;
 
@@ -39,6 +41,7 @@ public class ActivityFavorito extends AppCompatActivity implements View.OnClickL
     TextView txtSubItemNome;
     TextView txtBancoNome;
     TextView txtContaNome;
+    TextView txtElementoNome;
 
     EditText edDescricao;
 
@@ -48,11 +51,13 @@ public class ActivityFavorito extends AppCompatActivity implements View.OnClickL
     String tipo;
     String item;
     String subitem;
+    String elemento;
 
     Integer idCategoria;
     Integer idTipo;
     Integer idItem;
     Integer idSubItem;
+    Integer idElemento;
 
     Button btn_Salvar;
     Button btn_Voltar;
@@ -91,6 +96,7 @@ public class ActivityFavorito extends AppCompatActivity implements View.OnClickL
         txtTipoNome = findViewById(R.id.txtTipoNome);
         txtItemNome = findViewById(R.id.txtItemNome);
         txtSubItemNome = findViewById(R.id.txtSubItemNome);
+        txtElementoNome = findViewById(R.id.txtElementoNome);
         txtBancoNome = findViewById(R.id.txtBancoNome);
         txtContaNome = findViewById(R.id.txtContaNome);
 
@@ -98,6 +104,7 @@ public class ActivityFavorito extends AppCompatActivity implements View.OnClickL
         txtTipo = findViewById(R.id.txtTipo);
         txtItem = findViewById(R.id.txtItem);
         txtSubItem = findViewById(R.id.txtSubItem);
+        txtElemento = findViewById(R.id.txtElemento);
         txtBanco = findViewById(R.id.txtBanco);
         txtConta = findViewById(R.id.txtConta);
 
@@ -136,14 +143,15 @@ public class ActivityFavorito extends AppCompatActivity implements View.OnClickL
                             favorito.setIdOpcao(conta.getIdConta());
                             favorito.setIdBanco(conta.getIdBanco());
                             favorito.setIdConta(conta.getIdConta());
+
                         }
                         break;
 
                     case "ler":
                         //somente ler as informações
                         favorito = favoritoDao.buscarById(favorito.getIdFavorito());
-                        txtBancoNome.setText(favorito.getBancoNome());
-                        txtContaNome.setText(favorito.getContaNome());
+                        txtBancoNome.setText(lancamento.getConta().getBancoNome());
+                        txtContaNome.setText(lancamento.getConta().getDescricao());
                         edDescricao.setText(favorito.getDescricao());
                         edDescricao.setEnabled(false);
                         btn_Salvar.setEnabled(false);
@@ -151,6 +159,7 @@ public class ActivityFavorito extends AppCompatActivity implements View.OnClickL
                 }
 
                 break;
+
             case "subitem":
                 txtBanco.setEnabled(false);
                 txtConta.setEnabled(false);
@@ -209,10 +218,10 @@ public class ActivityFavorito extends AppCompatActivity implements View.OnClickL
 
                     case "ler":
                         favorito = favoritoDao.buscarById(favorito.getIdFavorito());
-                        txtCategoriaNome.setText(favorito.getCategoriaNome());
-                        txtTipoNome.setText(favorito.getTipoNome());
-                        txtItemNome.setText(favorito.getItemNome());
-                        txtSubItemNome.setText(favorito.getSubItemNome());
+                        txtCategoriaNome.setText(lancamento.getSubitem().getCategoriaNome());
+                        txtTipoNome.setText(lancamento.getSubitem().getTipoNome());
+                        txtItemNome.setText(lancamento.getSubitem().getItemNome());
+                        txtSubItemNome.setText(lancamento.getSubitem().getDescricao());
 
                         edDescricao.setText(favorito.getDescricao());
                         edDescricao.setEnabled(false);
@@ -221,6 +230,83 @@ public class ActivityFavorito extends AppCompatActivity implements View.OnClickL
                 }
 
                 break;
+
+            case "elemento":
+                txtBanco.setEnabled(false);
+                txtConta.setEnabled(false);
+                switch (operacao) {
+                    case "update/insert":
+
+                        //se for novo registro, verificar no banco qual o id, buscado pela descricao
+                        if (lancamento.getElemento().getIdElemento() == null) {
+                            ElementoDao elementoDao = FabricaDao.criarElementoDao();
+                            Elemento elemento = new Elemento();
+                            elemento = elementoDao.buscarByNome(lancamento.getElemento().getDescricao());
+                            lancamento.setElemento(elemento);
+                            posicao = elemento.getIdElemento();
+                        } else {
+                            //talvez possa tirar essa linha, pois no update/insert sempre será null no ler e que existe
+                            posicao = lancamento.getElemento().getIdElemento();
+                        }
+
+                        //buscar os nomes para preencher na tela
+                        ElementoDao elementoDao = FabricaDao.criarElementoDao();
+                        lancamento = elementoDao.buscar(lancamento);
+
+                        idCategoria = lancamento.getElemento().getIdElemento();
+                        categoria = lancamento.getElemento().getCategoriaNome();
+                        idTipo = lancamento.getElemento().getIdTipo();
+                        tipo = lancamento.getElemento().getTipoNome();
+                        idItem = lancamento.getElemento().getIdItem();
+                        item = lancamento.getElemento().getItemNome();
+                        idSubItem = lancamento.getElemento().getIdSubItem();
+                        subitem = lancamento.getElemento().getSubitemNome();
+                        elemento = lancamento.getElemento().getDescricao();
+
+                        txtCategoriaNome.setText(categoria);
+                        txtTipoNome.setText(tipo);
+                        txtItemNome.setText(item);
+                        txtSubItemNome.setText(subitem);
+                        txtElementoNome.setText(elemento);
+
+
+                        //buscar os parametros se houver
+                        favorito = favoritoDao.buscar(opcao, posicao);
+
+                        if (favorito != null) {
+                            operacao = "update";
+                            edDescricao.setText(favorito.getDescricao());
+                        } else {
+                            operacao = "insert";
+                            favorito = new Favorito();
+                            favorito.setOpcao(opcao);
+                            favorito.setIdOpcao(idSubItem);
+                            favorito.setIdCategoria(idCategoria);
+                            favorito.setIdTipo(idTipo);
+                            favorito.setIdItem(idItem);
+                            favorito.setIdSubItem(idSubItem);
+                            favorito.setIdElemento(idElemento);
+
+                        }
+                        break;
+
+                    case "ler":
+                        favorito = favoritoDao.buscarById(favorito.getIdFavorito());
+                        txtCategoriaNome.setText(lancamento.getElemento().getCategoriaNome());
+                        txtTipoNome.setText(lancamento.getElemento().getTipoNome());
+                        txtItemNome.setText(lancamento.getElemento().getItemNome());
+                        txtSubItemNome.setText(lancamento.getElemento().getSubitemNome());
+                        txtElementoNome.setText(lancamento.getElemento().getDescricao());
+
+                        edDescricao.setText(favorito.getDescricao());
+                        edDescricao.setEnabled(false);
+                        btn_Salvar.setEnabled(false);
+                        break;
+                }
+
+                break;
+
+
         }
 
     }
@@ -247,7 +333,7 @@ public class ActivityFavorito extends AppCompatActivity implements View.OnClickL
                     if (id != -1) {
                         Toast.makeText(this, R.string.txt_cadastrado, Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, R.string.txt_naoCadastrado, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Erro ao Salvar/Alterar", Toast.LENGTH_SHORT).show();
                     }
                     this.finish();
                 }

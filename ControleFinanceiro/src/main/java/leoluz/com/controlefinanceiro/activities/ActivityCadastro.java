@@ -87,9 +87,11 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
         btn_SubItem = findViewById(R.id.btnSubItem);
         btn_SubItem.setOnClickListener(this);
         swt_Favorito = findViewById(R.id.swtFavorito);
+        swt_Favorito.setOnClickListener(this);
         swt_Habilitado = findViewById(R.id.swtHabilitado);
+        swt_Habilitado.setOnClickListener(this);
         swt_Incremento = findViewById(R.id.swtIncremento);
-
+        swt_Incremento.setOnClickListener(this);
         //atribuição ação aos campos de texto
         edCategoria = findViewById(R.id.textCategoria);
         edTipo = findViewById(R.id.textTipo);
@@ -176,6 +178,7 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                     case "subitem":
                         btn_SubItem.setEnabled(false);
                         swt_Favorito.setChecked(false);
+                        swt_Favorito.setEnabled(false);
                         swt_Habilitado.setEnabled(false);
                         swt_Incremento.setEnabled(false);
                         edCategoria.setEnabled(false);
@@ -255,18 +258,20 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                         edElemento.setEnabled(false);
                         break;
                     case "subitem":
+                        //verificar se estava habilitado
+                        if (lancamento.getSubitem().getHabilitado() == 1) {
+                            swt_Habilitado.setChecked(true);
+                        } else {
+                            swt_Habilitado.setChecked(false);
+                            swt_Favorito.setEnabled(false);
+                        }
                         //verificar se estava como favorito
                         if (lancamento.getSubitem().getFavorito() == 1) {
                             swt_Favorito.setChecked(true);
                         } else {
                             swt_Favorito.setChecked(false);
                         }
-                        //verificar se estava habilitado
-                        if (lancamento.getSubitem().getHabilitado() == 1) {
-                            swt_Habilitado.setChecked(true);
-                        } else {
-                            swt_Habilitado.setChecked(false);
-                        }
+
                         swt_Incremento.setEnabled(false);
                         edCategoria.setText(lancamento.getSubitem().getCategoriaNome());
                         edCategoria.setEnabled(false);
@@ -278,11 +283,18 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                         edElemento.setEnabled(false);
                         break;
                     case "elemento":
+                        //verificar se estava como favorito
+                        if (lancamento.getElemento().getFavorito() == 1) {
+                            swt_Favorito.setChecked(true);
+                        } else {
+                            swt_Favorito.setChecked(false);
+                        }
                         //verificar se estava habilitado
                         if (lancamento.getElemento().getHabilitado() == 1) {
                             swt_Habilitado.setChecked(true);
                         } else {
                             swt_Habilitado.setChecked(false);
+                            swt_Favorito.setEnabled(false);
                         }
                         swt_Incremento.setEnabled(false);
                         edCategoria.setText(lancamento.getElemento().getCategoriaNome());
@@ -326,17 +338,10 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                     id = categoriaDao.salvar(lancamento);
                                     break;
                                 case "update":
-                                    List<String> lista = categoriaDao.listarTodosString();
-                                    if ((!lancamento.getCategoria().getDescricao().equalsIgnoreCase(edCategoria.getText().toString().toUpperCase()) &&
-                                            lista.contains(edCategoria.getText().toString().toUpperCase()))) {
-                                        Toast.makeText(this, "A descrição já existe!", Toast.LENGTH_SHORT).show();
+                                    Integer contador = categoriaDao.contarDescricao(edCategoria.getText().toString().toUpperCase());
+                                    if (contador > 0) {
+                                        id = Long.parseLong(String.valueOf(contador * -1));
                                     } else {
-                                        //verifica se está habilitado
-                                        if (swt_Habilitado.isChecked()) {
-                                            categoria.setHabilitado(1);
-                                        } else {
-                                            categoria.setHabilitado(0);
-                                        }
                                         categoria.setDescricao(edCategoria.getText().toString());
                                         categoria.setIdCategoria(lancamento.getCategoria().getIdCategoria());
                                         lancamento.setCategoria(categoria);
@@ -370,15 +375,9 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                         break;
                                     case "update":
                                         Integer contador = tipoDao.contarDescricao(lancamento.getTipo().getIdCategoria(), edTipo.getText().toString().toUpperCase());
-                                        if(contador > 0){
-                                            id = Long.parseLong( String.valueOf(contador*-1));
+                                        if (contador > 0) {
+                                            id = Long.parseLong(String.valueOf(contador * -1));
                                         } else {
-                                            //verifica se está habilitado
-                                            if (swt_Habilitado.isChecked()) {
-                                                tipo.setHabilitado(1);
-                                            } else {
-                                                tipo.setHabilitado(0);
-                                            }
                                             tipo.setDescricao(edTipo.getText().toString());
                                             tipo.setIdTipo(lancamento.getTipo().getIdTipo());
                                             lancamento.setTipo(tipo);
@@ -419,15 +418,9 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                             Integer contador = itemDao.contarDescricao(lancamento.getItem().getIdCategoria(),
                                                     lancamento.getItem().getIdTipo(),
                                                     edItem.getText().toString().toUpperCase());
-                                            if(contador > 0){
-                                                id = Long.parseLong( String.valueOf(contador*-1));
+                                            if (contador > 0) {
+                                                id = Long.parseLong(String.valueOf(contador * -1));
                                             } else {
-                                                //verifica se está habilitado
-                                                if (swt_Habilitado.isChecked()) {
-                                                    item.setHabilitado(1);
-                                                } else {
-                                                    item.setHabilitado(0);
-                                                }
                                                 item.setDescricao(edItem.getText().toString());
                                                 item.setIdItem(lancamento.getItem().getIdItem());
                                                 lancamento.setItem(item);
@@ -460,29 +453,11 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                         Toast.makeText(this, R.string.txt_SubItemVazio, Toast.LENGTH_SHORT).show();
                                     } else {
                                         SubItemDao subItemDao = FabricaDao.criarSubitemDao();
-
-                                        //Verifica se eh um dos favoritos
-                                        if (swt_Favorito.isChecked()) {
-                                            subItem.setFavorito(1);
-                                        } else {
-                                            subItem.setFavorito(0);
-                                        }
-
-                                        //Verificar se eh um novo favorito
-                                        if (lancamento.getSubitem() != null && lancamento.getSubitem().getFavorito() < subItem.getFavorito()) {
-                                            favoritoAlterado = true;
-                                        }
-                                        if (lancamento.getSubitem() != null && lancamento.getSubitem().getFavorito() > subItem.getFavorito()) {
-                                            excluirFavorito = true;
-                                        }
-                                        //inserir um novo subitem e registrar como favorito
-                                        if (operacao.equalsIgnoreCase("insert") && swt_Favorito.isChecked()) {
-                                            favoritoAlterado = true;
-                                        }
                                         switch (operacao) {
                                             case "insert":
                                                 subItem.setDescricao(edSubitem.getText().toString());
                                                 subItem.setHabilitado(1);
+                                                subItem.setFavorito(0);
                                                 lancamento.setSubitem(subItem);
                                                 id = subItemDao.salvar(lancamento);
                                                 break;
@@ -493,17 +468,9 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                                         lancamento.getSubitem().getIdTipo(),
                                                         lancamento.getSubitem().getIdItem(),
                                                         edSubitem.getText().toString().toUpperCase());
-                                                if(contador > 0){
-                                                    id = Long.parseLong( String.valueOf(contador*-1));
-                                                    favoritoAlterado = false;
-                                                    excluirFavorito = false;
+                                                if (contador > 0) {
+                                                    id = Long.parseLong(String.valueOf(contador * -1));
                                                 } else {
-                                                    //verifica se está habilitado
-                                                    if (swt_Habilitado.isChecked()) {
-                                                        subItem.setHabilitado(1);
-                                                    } else {
-                                                        subItem.setHabilitado(0);
-                                                    }
                                                     subItem.setDescricao(edSubitem.getText().toString());
                                                     subItem.setIdSubItem(lancamento.getSubitem().getIdSubItem());
                                                     lancamento.setSubitem(subItem);
@@ -513,14 +480,6 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                         }
 
                                         if (id != -1) {
-                                            if (favoritoAlterado) {
-                                                listaFavorito(lancamento);
-                                            }
-                                            if (excluirFavorito) {
-                                                FavoritoDao favoritoDao = FabricaDao.criarFavoritoDao();
-                                                favoritoDao.excluir("subitem", lancamento.getSubitem().getIdSubItem());
-                                            }
-
                                             novoCadastro();
                                         } else {
                                             Toast.makeText(this, R.string.txt_naoCadastrado, Toast.LENGTH_SHORT).show();
@@ -553,6 +512,7 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                                 case "insert":
                                                     elemento.setDescricao(edElemento.getText().toString());
                                                     elemento.setHabilitado(1);
+                                                    elemento.setFavorito(0);
                                                     lancamento.setElemento(elemento);
                                                     id = elementoDao.salvar(lancamento);
                                                     break;
@@ -562,15 +522,9 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                                                             lancamento.getElemento().getIdItem(),
                                                             lancamento.getElemento().getIdSubItem(),
                                                             edElemento.getText().toString().toUpperCase());
-                                                    if(contador > 0){
-                                                        id = Long.parseLong( String.valueOf(contador*-1));
-                                               } else {
-                                                        //verifica se está habilitado
-                                                        if (swt_Habilitado.isChecked()) {
-                                                            elemento.setHabilitado(1);
-                                                        } else {
-                                                            elemento.setHabilitado(0);
-                                                        }
+                                                    if (contador > 0) {
+                                                        id = Long.parseLong(String.valueOf(contador * -1));
+                                                    } else {
                                                         elemento.setDescricao(edElemento.getText().toString());
                                                         elemento.setIdElemento(lancamento.getElemento().getIdElemento());
                                                         lancamento.setElemento(elemento);
@@ -630,7 +584,8 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                 startActivity(it);
                 this.finish();
                 break;
-        case R.id.btnCategoria:
+
+            case R.id.btnCategoria:
                 Intent listcat = new Intent(this, ActivityLista.class);
                 lancamento.setTipo(null);
                 lancamento.setItem(null);
@@ -676,6 +631,7 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                     finish();
                 }
                 break;
+
             case R.id.btnSubItem:
                 if (lancamento.getItem() == null) {
                     Toast.makeText(this, R.string.txt_btSubItemVazio, Toast.LENGTH_SHORT).show();
@@ -692,8 +648,137 @@ public class ActivityCadastro extends AppCompatActivity implements View.OnClickL
                     finish();
                 }
                 break;
+
+            case R.id.swtHabilitado:
+                switch (operacao) {
+                    case "update":
+                        switch (opcao) {
+                            case "categoria":
+                                CategoriaDao categoriaDao = FabricaDao.criarCategoriaDao();
+                                if (lancamento.getCategoria().getHabilitado() > 0) {
+                                    lancamento.getCategoria().setHabilitado(0);
+                                } else {
+                                    lancamento.getCategoria().setHabilitado(1);
+                                }
+                                id = categoriaDao.alterarStatus(lancamento);
+                                break;
+
+                            case "tipo":
+                                TipoDao tipoDao = FabricaDao.criarTipoDao();
+                                if (lancamento.getTipo().getHabilitado() > 0) {
+                                    lancamento.getTipo().setHabilitado(0);
+                                } else {
+                                    lancamento.getTipo().setHabilitado(1);
+                                }
+                                id = tipoDao.alterarStatus(lancamento);
+                                break;
+
+                            case "item":
+                                ItemDao itemDao = FabricaDao.criarItemDao();
+                                if (lancamento.getItem().getHabilitado() > 0) {
+                                    lancamento.getItem().setHabilitado(0);
+                                } else {
+                                    lancamento.getItem().setHabilitado(1);
+                                }
+                                id = itemDao.alterarStatus(lancamento);
+                                break;
+
+                            case "subitem":
+                                SubItemDao subItemDao = FabricaDao.criarSubitemDao();
+                                if (lancamento.getSubitem().getHabilitado() > 0) {
+                                    lancamento.getSubitem().setHabilitado(0);
+                                } else {
+                                    lancamento.getSubitem().setHabilitado(1);
+                                }
+                                id = subItemDao.alterarStatus(lancamento);
+                                break;
+
+                            case "elemento":
+                                ElementoDao elementoDao = FabricaDao.criarElementoDao();
+                                if (lancamento.getElemento().getHabilitado() > 0) {
+                                    lancamento.getElemento().setHabilitado(0);
+                                } else {
+                                    lancamento.getElemento().setHabilitado(1);
+                                }
+                                id = elementoDao.alterarStatus(lancamento);
+                                break;
+                        }
+                        if (id != -1) {
+                            Toast.makeText(this, "Operação realizado com sucesso", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Erro neste operação", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+                break;
+
+            case R.id.swtFavorito:
+                switch (operacao) {
+                    case "update":
+                        switch (opcao) {
+                            case "subitem":
+                                SubItemDao subItemDao = FabricaDao.criarSubitemDao();
+                                if (lancamento.getSubitem().getFavorito() > 0) {
+                                    FavoritoDao favoritoDao = FabricaDao.criarFavoritoDao();
+                                    favoritoDao.excluir("subitem", lancamento.getSubitem().getIdSubItem());
+                                    lancamento.getSubitem().setFavorito(0);
+                                } else {
+                                    listaFavorito(lancamento);
+                                    lancamento.getSubitem().setFavorito(1);
+                                }
+                                id = subItemDao.alterarStatus(lancamento);
+                                break;
+
+                            case "elemento":
+                                ElementoDao elementoDao = FabricaDao.criarElementoDao();
+                                if (lancamento.getElemento().getFavorito() > 0) {
+                                    FavoritoDao favoritoDao = FabricaDao.criarFavoritoDao();
+                                    favoritoDao.excluir("elemento", lancamento.getElemento().getIdElemento());
+                                    lancamento.getElemento().setFavorito(0);
+                                } else {
+                                    listaFavorito(lancamento);
+                                    lancamento.getElemento().setFavorito(1);
+                                }
+                                id = elementoDao.alterarStatus(lancamento);
+                                break;
+                        }
+                        if (id != -1) {
+                            Toast.makeText(this, "Operação realizado com sucesso", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Erro neste operação", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+                break;
+
+            case R.id.swtIncremento:
+                switch (operacao) {
+                    case "update":
+                        switch (opcao) {
+                            case "categoria":
+                                CategoriaDao categoriaDao = FabricaDao.criarCategoriaDao();
+                                if (lancamento.getCategoria().getIncremento() > 0) {
+                                    lancamento.getCategoria().setIncremento(0);
+                                } else {
+                                    lancamento.getCategoria().setIncremento(1);
+                                }
+                                id = categoriaDao.alterarStatus(lancamento);
+                                break;
+
+                        }
+                        if (id != -1) {
+                            Toast.makeText(this, "Operação realizado com sucesso", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Erro neste operação", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+                break;
         }
+
+
     }
+
 
     private void listaFavorito(Lancamento lancamento) {
 

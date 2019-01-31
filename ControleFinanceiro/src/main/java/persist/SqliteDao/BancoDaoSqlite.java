@@ -10,6 +10,7 @@ import java.util.List;
 import model.Banco;
 import model.Carteira;
 import model.Categoria;
+import model.Lancamento;
 import persist.DAO.BancoDao;
 import persist.DAO.CategoriaDao;
 
@@ -79,7 +80,6 @@ public class BancoDaoSqlite extends GenericDaoSqlite implements BancoDao {
         SQLiteDatabase db = getWritebleDB();
         ContentValues values = new ContentValues();
         values.put("descricao", carteira.getBanco().getDescricao().toUpperCase());
-        values.put("habilitado", carteira.getBanco().getHabilitado());
         String where = "idBanco = ?";
         String argumentos[] = {String.valueOf(carteira.getBanco().getIdBanco())};
         id = db.update("banco", values, where, argumentos);
@@ -137,5 +137,17 @@ public class BancoDaoSqlite extends GenericDaoSqlite implements BancoDao {
             }
         }
         return myArray;
+    }
+
+    @Override
+    public long alterarStatus(Carteira carteira) {
+        long id = 0;
+        SQLiteDatabase db = getWritebleDB();
+        ContentValues values = new ContentValues();
+        values.put("habilitado", carteira.getBanco().getHabilitado());
+        String where = "idBanco = ?";
+        String argumentos[] = {String.valueOf(carteira.getBanco().getIdBanco())};
+        id = db.update("banco", values, where, argumentos);
+        return id;
     }
 }

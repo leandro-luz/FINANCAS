@@ -42,12 +42,12 @@ public class SubItemAdapterCompleto extends BaseAdapter{
     @Override
     public View getView(int position, View convertview, ViewGroup parent) {
         SubItem subItem = subItens.get(position);
-        View linha = LayoutInflater.from(ctx).inflate(R.layout.listacompleta, parent, false);
+        View linha = LayoutInflater.from(ctx).inflate(R.layout.listasubitem, parent, false);
         TextView txtId = (TextView) linha.findViewById(R.id.txtId);
         TextView txtCategoria = (TextView) linha.findViewById(R.id.txtCategoria);
         TextView txtTipo = (TextView) linha.findViewById(R.id.txtTipo);
         TextView txtItem = (TextView) linha.findViewById(R.id.txtItem);
-        TextView txtSubItem = (TextView) linha.findViewById(R.id.txtSubitem);
+        TextView txtSubItem = (TextView) linha.findViewById(R.id.txtSubItem);
         //Resources res = ctx.getResources();
         txtId.setText(Integer.toString(subItem.getIdSubItem()));
         txtCategoria.setText(subItem.getCategoriaNome());

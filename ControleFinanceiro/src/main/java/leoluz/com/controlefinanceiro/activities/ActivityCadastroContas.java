@@ -24,8 +24,12 @@ import model.SubItem;
 import persist.DAO.BancoDao;
 import persist.DAO.CategoriaDao;
 import persist.DAO.ContaDao;
+import persist.DAO.ElementoDao;
 import persist.DAO.FabricaDao;
 import persist.DAO.FavoritoDao;
+import persist.DAO.ItemDao;
+import persist.DAO.SubItemDao;
+import persist.DAO.TipoDao;
 import util.QuantidadeLista;
 
 public class ActivityCadastroContas extends AppCompatActivity implements View.OnClickListener {
@@ -76,7 +80,9 @@ public class ActivityCadastroContas extends AppCompatActivity implements View.On
         btn_Voltar.setOnClickListener(this);
 
         swt_Favorito = findViewById(R.id.swtFavorito);
+        swt_Favorito.setOnClickListener(this);
         swt_Habilitado = findViewById(R.id.swtHabilitado);
+        swt_Habilitado.setOnClickListener(this);
 
         edBanco = findViewById(R.id.textBanco);
         edConta = findViewById(R.id.textConta);
@@ -95,12 +101,13 @@ public class ActivityCadastroContas extends AppCompatActivity implements View.On
                 btn_Excluir.setEnabled(false);
                 swt_Habilitado.setChecked(true);
                 swt_Habilitado.setEnabled(false);
+                swt_Favorito.setEnabled(false);
                 switch (opcao) {
                     case "banco":
                         btn_Banco.setEnabled(false);
                         edConta.setEnabled(false);
                         edSaldo.setEnabled(false);
-                        swt_Favorito.setEnabled(false);
+
                         break;
                     case "conta":
                         if (carteira != null) {
@@ -145,6 +152,7 @@ public class ActivityCadastroContas extends AppCompatActivity implements View.On
                             swt_Habilitado.setChecked(true);
                         } else {
                             swt_Habilitado.setChecked(false);
+                            swt_Favorito.setEnabled(false);
                         }
 
                         btn_Banco.setEnabled(false);
@@ -175,12 +183,6 @@ public class ActivityCadastroContas extends AppCompatActivity implements View.On
                                     id = bancoDao.salvar(banco);
                                     break;
                                 case "update":
-                                    //verifica se está habilitado
-                                    if (swt_Habilitado.isChecked()) {
-                                        carteira.getBanco().setHabilitado(1);
-                                    } else {
-                                        carteira.getBanco().setHabilitado(0);
-                                    }
                                     //verificar se a descrição da tela está diferente da que esta no banco
                                     //se for diferente verifica se a descriação já não existe
 
@@ -230,20 +232,6 @@ public class ActivityCadastroContas extends AppCompatActivity implements View.On
                                         break;
 
                                     case "update":
-                                        //verifica se está habilitado
-                                        if (swt_Habilitado.isChecked()) {
-                                            carteira.getConta().setHabilitado(1);
-                                        } else {
-                                            carteira.getConta().setHabilitado(0);
-                                        }
-                                        if (swt_Favorito.isChecked() && carteira.getConta().getFavorito() == 0) {
-                                            carteira.getConta().setFavorito(1);
-                                            favoritoAlterado = true;
-                                        }
-                                        if (!swt_Favorito.isChecked() && carteira.getConta().getFavorito() == 1) {
-                                            carteira.getConta().setFavorito(1);
-                                            excluirFavorito = true;
-                                        }
                                         //verificar se a descrição da tela está diferente da que esta no banco
                                         //se for diferente verifica se a descriação já não existe
 
@@ -321,6 +309,66 @@ public class ActivityCadastroContas extends AppCompatActivity implements View.On
                 //it.putExtra("opcao", opcao);
                 //startActivity(it);
                 this.finish();
+                break;
+
+            case R.id.swtHabilitado:
+                switch (operacao) {
+                    case "update":
+                        switch (opcao) {
+                            case "banco":
+                                BancoDao bancoDao = FabricaDao.criarBancoDao();
+                                if (carteira.getBanco().getHabilitado() > 0) {
+                                    carteira.getBanco().setHabilitado(0);
+                                } else {
+                                    carteira.getBanco().setHabilitado(1);
+                                }
+                                id = bancoDao.alterarStatus(carteira);
+                                break;
+
+                            case "conta":
+                                ContaDao contaDao = FabricaDao.criarContaDao();
+                                if (carteira.getConta().getHabilitado() > 0) {
+                                    carteira.getConta().setHabilitado(0);
+                                } else {
+                                    carteira.getConta().setHabilitado(1);
+                                }
+                                id = contaDao.alterarStatus(carteira);
+                                break;
+                        }
+                        if (id != -1) {
+                            Toast.makeText(this, "Operação realizado com sucesso", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Erro neste operação", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
+                break;
+
+            case R.id.swtFavorito:
+                switch (operacao) {
+                    case "update":
+                        switch (opcao) {
+
+                            case "conta":
+                                ContaDao contaDao = FabricaDao.criarContaDao();
+                                if (carteira.getConta().getFavorito() > 0) {
+                                    FavoritoDao favoritoDao = FabricaDao.criarFavoritoDao();
+                                    favoritoDao.excluir("conta", carteira.getConta().getIdConta());
+                                    carteira.getConta().setFavorito(0);
+                                } else {
+                                    listaFavorito();
+                                    carteira.getConta().setFavorito(1);
+                                }
+                                id = contaDao.alterarStatus(carteira);
+                                break;
+                        }
+                        if (id != -1) {
+                            Toast.makeText(this, "Operação realizado com sucesso", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Erro neste operação", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                }
                 break;
         }
     }

@@ -14,5 +14,6 @@ public interface CategoriaDao {
     List<Categoria> listarTodos();
     List<Categoria> listarTodosHabilitados();
     List<String> listarTodosString();
-
+    Integer contarDescricao(String descricao);
+    long alterarStatus(Lancamento lancamento);
 }

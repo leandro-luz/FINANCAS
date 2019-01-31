@@ -31,6 +31,7 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
             values.put("idSubItem", c.getSubitem().getIdSubItem());
             values.put("descricao", c.getElemento().getDescricao().toUpperCase());
             values.put("habilitado", c.getSubitem().getHabilitado());
+            values.put("favorito", c.getElemento().getFavorito());
             id = db.insert("elemento", null, values);
         }
         db.execSQL("PRAGMA foreign_keys = OFF");
@@ -45,7 +46,7 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
         SQLiteDatabase db = getReadableDB();
         Cursor resultSet = db.rawQuery("select elemento.idElemento, categoria.descricao, tipo.descricao, " +
                 "item.descricao, subitem.descricao, elemento.descricao, " +
-                "categoria.idCategoria, tipo.idTipo, item.idItem, subitem.idSubItem, elemento.idElemento " +
+                "categoria.idCategoria, tipo.idTipo, item.idItem, subitem.idSubItem, elemento.idElemento, elemento.favorito " +
                 "from elemento " +
                 "inner join categoria on elemento.idCategoria = categoria.idCategoria " +
                 "inner join tipo on elemento.idTipo = tipo.idTipo " +
@@ -62,13 +63,12 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
                     elemento.setItemNome(resultSet.getString(3));
                     elemento.setSubitemNome(resultSet.getString(4));
                     elemento.setDescricao(resultSet.getString(5));
-
                     elemento.setIdCategoria(resultSet.getInt(6));
                     elemento.setIdTipo(resultSet.getInt(7));
                     elemento.setIdItem(resultSet.getInt(8));
                     elemento.setIdSubItem(resultSet.getInt(9));
-                    elemento.setIdSubItem(resultSet.getInt(10));
-
+                    elemento.setIdElemento(resultSet.getInt(10));
+                    elemento.setFavorito(resultSet.getInt(11));
                     lancamento.setElemento(elemento);
                 } while (resultSet.moveToNext());
             }
@@ -97,7 +97,6 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
         SQLiteDatabase db = getWritebleDB();
         ContentValues values = new ContentValues();
         values.put("descricao", lancamento.getElemento().getDescricao().toUpperCase());
-        values.put("habilitado", lancamento.getElemento().getHabilitado());
         String where = "idElemento = ?";
         String argumentos[] = {String.valueOf(lancamento.getElemento().getIdElemento())};
         id = db.update("elemento", values, where, argumentos);
@@ -136,6 +135,7 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
                     elemento.setIdSubItem(resultSet.getInt(4));
                     elemento.setDescricao(resultSet.getString(5));
                     elemento.setHabilitado(resultSet.getInt(6));
+                    elemento.setFavorito(resultSet.getInt(7));
                     myArray.add(elemento);
                 } while (resultSet.moveToNext());
             }
@@ -158,6 +158,7 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
                     elemento.setIdSubItem(resultSet.getInt(4));
                     elemento.setDescricao(resultSet.getString(5));
                     elemento.setHabilitado(resultSet.getInt(6));
+                    elemento.setFavorito(resultSet.getInt(7));
                     myArray.add(elemento);
                 } while (resultSet.moveToNext());
             }
@@ -171,7 +172,7 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
         SQLiteDatabase db = getReadableDB();
         Cursor resultSet = db.rawQuery("select elemento.idElemento, elemento.habilitado, elemento.descricao, " +
                 "categoria.descricao, tipo.descricao, item.descricao, subitem.descricao, categoria.idCategoria, " +
-                "tipo.idTipo, item.idItem, subitem.idSubItem from elemento inner " +
+                "tipo.idTipo, item.idItem, subitem.idSubItem , elemento.favorito from elemento inner " +
                 "join categoria On elemento.idCategoria = categoria.idCategoria " +
                 "join tipo On elemento.idTipo = tipo.idTipo " +
                 "join item On elemento.idItem = item.idItem " +
@@ -191,6 +192,7 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
                     elemento.setIdTipo(resultSet.getInt(8));
                     elemento.setIdItem(resultSet.getInt(9));
                     elemento.setIdSubItem(resultSet.getInt(10));
+                    elemento.setFavorito(resultSet.getInt(11));
 
                     myArray.add(elemento);
                 } while (resultSet.moveToNext());
@@ -220,6 +222,7 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
                     elemento.setIdSubItem(resultSet.getInt(4));
                     elemento.setDescricao(resultSet.getString(5));
                     elemento.setHabilitado(resultSet.getInt(6));
+                    elemento.setFavorito(resultSet.getInt(7));
                     myArray.add(elemento);
                 } while (resultSet.moveToNext());
             }
@@ -261,5 +264,38 @@ public class ElementoDaoSqlite extends GenericDaoSqlite implements ElementoDao {
             }
         }
         return contador;
+    }
+
+    @Override
+    public long alterarStatus(Lancamento lancamento) {
+        long id = 0;
+        SQLiteDatabase db = getWritebleDB();
+        ContentValues values = new ContentValues();
+        values.put("habilitado", lancamento.getElemento().getHabilitado());
+        values.put("favorito", lancamento.getElemento().getFavorito());
+        String where = "idElemento = ?";
+        String argumentos[] = {String.valueOf(lancamento.getElemento().getIdElemento())};
+        id = db.update("elemento", values, where, argumentos);
+        return id;
+    }
+
+    public Elemento buscarByNome(String nome) {
+        Elemento elemento = new Elemento();
+        SQLiteDatabase db = getReadableDB();
+        Cursor resultSet = db.rawQuery("Select * From elemento where descricao = '" + nome.toUpperCase() + "'", null);
+        if (resultSet != null) {
+            if (resultSet.moveToFirst()) {
+                do {
+                    elemento.setIdElemento(resultSet.getInt(0));
+                    elemento.setIdCategoria(resultSet.getInt(1));
+                    elemento.setIdTipo(resultSet.getInt(2));
+                    elemento.setIdItem(resultSet.getInt(3));
+                    elemento.setIdSubItem(resultSet.getInt(4));
+                    elemento.setDescricao(resultSet.getString(5));
+                    elemento.setHabilitado(resultSet.getInt(6));
+                } while (resultSet.moveToNext());
+            }
+        }
+        return elemento;
     }
 }

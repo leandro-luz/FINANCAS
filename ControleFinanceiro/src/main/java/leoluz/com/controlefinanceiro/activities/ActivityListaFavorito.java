@@ -16,6 +16,7 @@ import adapter.CategoriaAdapterCompleto;
 import adapter.FavoritoAdapter;
 import leoluz.com.controlefinanceiro.R;
 import model.Banco;
+import model.Carteira;
 import model.Categoria;
 import model.Conta;
 import model.Elemento;
@@ -25,8 +26,11 @@ import model.Lancamento;
 import model.SubItem;
 import model.Tipo;
 import persist.DAO.CategoriaDao;
+import persist.DAO.ContaDao;
+import persist.DAO.ElementoDao;
 import persist.DAO.FabricaDao;
 import persist.DAO.FavoritoDao;
+import persist.DAO.SubItemDao;
 import util.QuantidadeLista;
 
 public class ActivityListaFavorito extends AppCompatActivity {
@@ -88,58 +92,63 @@ public class ActivityListaFavorito extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 if (id != -1) {
-
-                    if (opcao.equalsIgnoreCase("lancamento")) {
+                    Lancamento lancamento = new Lancamento();
+                    if (opcao.equalsIgnoreCase("ler")) {
                         //recebe o favorito escolhido pelo usuario
                         Favorito favorito2 = (Favorito) adapterView.getItemAtPosition(position);
+                        lista = favorito2.getOpcao();
 
-                        //injeta o favorito escolhido, no favorito para ser enviado para a tela
                         switch (lista) {
                             case "subitem":
-                                Categoria categoria = new Categoria();
-                                Tipo tipo = new Tipo();
-                                Item item = new Item();
+                                //criar um subitem para buscar o restante das suas informações
                                 SubItem subItem = new SubItem();
-                                Elemento elemento = new Elemento();
+                                subItem.setIdSubItem(favorito2.getIdOpcao());
 
-                                categoria.setIdCategoria(favorito2.getIdCategoria());
-                                categoria.setDescricao(favorito2.getCategoriaNome());
-                                tipo.setIdTipo(favorito2.getIdTipo());
-                                tipo.setDescricao(favorito2.getTipoNome());
-                                item.setIdItem(favorito2.getIdItem());
-                                item.setDescricao(favorito2.getItemNome());
-                                subItem.setIdSubItem(favorito2.getIdSubItem());
-                                subItem.setDescricao(favorito2.getSubItemNome());
-                                elemento.setIdElemento(0);
-                                elemento.setDescricao("");
-
-                                lancamento.setCategoria(categoria);
-                                lancamento.setTipo(tipo);
-                                lancamento.setItem(item);
+                                //criar um lancamento e injeta o subitem para buscar as informações
                                 lancamento.setSubitem(subItem);
-                                lancamento.setElemento(elemento);
-                                lancamento.setIdFavoritoEstrutura(favorito2.getIdFavorito());
-                                lancamento.setFavoritoEstruturaNome(favorito2.getDescricao());
+
+                                //criar uma instancia para buscar as informações
+                                SubItemDao subItemDao = FabricaDao.criarSubitemDao();
+
+                                //busca e retorna com as informações
+                                lancamento = subItemDao.buscar(lancamento);
+
                                 break;
+
+                            case "elemento":
+                                //criar um elemento para buscar o restante das suas informações
+                                Elemento elemento = new Elemento();
+                                elemento.setIdElemento(favorito2.getIdOpcao());
+
+                                //criar um lancamento e injeta o elemento para buscar as informações
+                                lancamento.setElemento(elemento);
+
+                                //criar uma instancia para buscar as informações
+                                ElementoDao elementoDao = FabricaDao.criarElementoDao();
+
+                                //busca e retorna com as informações
+                                lancamento = elementoDao.buscar(lancamento);
+
+                                break;
+
                             case "conta":
-                                Banco banco = new Banco();
+                                //criar um elemento para buscar o restante das suas informações
                                 Conta conta = new Conta();
 
-                                banco.setIdBanco(favorito2.getIdBanco());
-                                banco.setDescricao(favorito2.getBancoNome());
-                                conta.setIdConta(favorito2.getIdConta());
-                                conta.setDescricao(favorito2.getContaNome());
-                                lancamento.setBanco(banco);
+                                //criar uma instancia para buscar as informações
+                                ContaDao contaDao = FabricaDao.criarContaDao();
+
+                                //busca e retorna com as informações
+                                conta = contaDao.buscarById(favorito2.getIdOpcao());
                                 lancamento.setConta(conta);
-                                lancamento.setIdFavoritoConta(favorito2.getIdConta());
-                                lancamento.setFavoritoContaNome(favorito2.getDescricao());
                                 break;
                         }
 
                         //volta na tela de cadastro de lancamento com o favorito escolhido
-                        Intent i = new Intent(ActivityListaFavorito.this, ActivityCadastroLancamento.class);
-                        i.putExtra("operacao", operacao);
-                        i.putExtra("opcao", opcao);
+                        Intent i = new Intent(ActivityListaFavorito.this, ActivityFavorito.class);
+                        i.putExtra("operacao", "ler");
+                        i.putExtra("opcao", lista);
+                        i.putExtra("favorito", favorito2);
                         i.putExtra("lancamento", lancamento);
                         startActivity(i);
                         finish();

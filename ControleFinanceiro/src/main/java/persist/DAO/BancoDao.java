@@ -16,4 +16,5 @@ public interface BancoDao {
     List<Banco> listarTodos();
     List<Banco> listarTodosHabilitados();
     List<String> listarTodosString();
+    long alterarStatus(Carteira carteira);
 }

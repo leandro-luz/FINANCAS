@@ -42,12 +42,12 @@ public class ElementoAdapterCompleto extends BaseAdapter{
     @Override
     public View getView(int position, View convertview, ViewGroup parent) {
         Elemento elemento = elementos.get(position);
-        View linha = LayoutInflater.from(ctx).inflate(R.layout.listacompleta, parent, false);
+        View linha = LayoutInflater.from(ctx).inflate(R.layout.listaelemento, parent, false);
         TextView txtId = (TextView) linha.findViewById(R.id.txtId);
         TextView txtCategoria = (TextView) linha.findViewById(R.id.txtCategoria);
         TextView txtTipo = (TextView) linha.findViewById(R.id.txtTipo);
         TextView txtItem = (TextView) linha.findViewById(R.id.txtItem);
-        TextView txtSubItem = (TextView) linha.findViewById(R.id.txtSubitem);
+        TextView txtSubItem = (TextView) linha.findViewById(R.id.txtSubItem);
         TextView txtElemento = (TextView) linha.findViewById(R.id.txtElemento);
         //Resources res = ctx.getResources();
         txtId.setText(Integer.toString(elemento.getIdElemento()));
@@ -72,6 +72,15 @@ public class ElementoAdapterCompleto extends BaseAdapter{
             txtItem.setTextColor(Color.RED);
             txtSubItem.setTextColor(Color.RED);
             txtElemento.setTextColor(Color.RED);
+        }
+
+        if(elemento.getFavorito()==1){
+            txtId.setTypeface(null, Typeface.BOLD);
+            txtCategoria.setTypeface(null, Typeface.BOLD);
+            txtTipo.setTypeface(null, Typeface.BOLD);
+            txtItem.setTypeface(null, Typeface.BOLD);
+            txtSubItem.setTypeface(null, Typeface.BOLD);
+            txtElemento.setTypeface(null, Typeface.BOLD);
         }
 
         return linha;

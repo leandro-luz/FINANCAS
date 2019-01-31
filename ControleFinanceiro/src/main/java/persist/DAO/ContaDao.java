@@ -20,4 +20,5 @@ public interface ContaDao {
     void alterarSaldoConta(Lancamento lancamento, int opcao);
     Conta buscarById(Integer id);
     Integer contarDescricao(Integer conta, String descricao);
+    long alterarStatus(Carteira carteira);
 }

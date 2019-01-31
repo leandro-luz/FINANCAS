@@ -78,6 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "idSubItem INTEGER not null, " +
                 "descricao TEXT not null, " +
                 "habilitado INTEGER not null," +
+                "favorito INTEGER not null, " +
                 "CONSTRAINT fk_subitem " +
                 "FOREIGN KEY (idSubItem)" +
                 "REFERENCES subitem(idSubItem)" +
@@ -111,9 +112,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "idTipo INTEGER , " +
                 "idItem INTEGER , " +
                 "idSubItem INTEGER , " +
+                "idElemento INTEGER , " +
                 "idBanco INTEGER , " +
                 "idConta INTEGER , " +
                 "CONSTRAINT fk_subitem FOREIGN KEY (idSubItem) REFERENCES subitem(idSubItem), " +
+                "CONSTRAINT fk_elemento FOREIGN KEY (idElemento) REFERENCES elemento(idElemento), " +
                 "CONSTRAINT fk_conta FOREIGN KEY (idConta) REFERENCES conta(idConta)" +
                 "ON DELETE CASCADE)";
         sqLiteDatabase.execSQL(favorito);
@@ -130,7 +133,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "descricao TEXT not null, " +
                 "habilitado INTEGER not null," +
                 "favorito INTEGER not null," +
-                "data String not null," +
                 "saldo REAL," +
                 "CONSTRAINT fk_conta " +
                 "FOREIGN KEY (idBanco)" +

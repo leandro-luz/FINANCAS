@@ -42,9 +42,9 @@ public class BancoAdapterCompleto extends BaseAdapter{
     @Override
     public View getView(int position, View convertview, ViewGroup parent) {
         Banco banco = bancos.get(position);
-        View linha = LayoutInflater.from(ctx).inflate(R.layout.listacompleta, parent, false);
+        View linha = LayoutInflater.from(ctx).inflate(R.layout.listabanco, parent, false);
         TextView txtId = (TextView) linha.findViewById(R.id.txtId);
-        TextView txtBanco = (TextView) linha.findViewById(R.id.txtCategoria);
+        TextView txtBanco = (TextView) linha.findViewById(R.id.txtBanco);
         //Resources res = ctx.getResources();
         txtId.setText(Integer.toString(banco.getIdBanco()));
         txtBanco.setText(banco.getDescricao());

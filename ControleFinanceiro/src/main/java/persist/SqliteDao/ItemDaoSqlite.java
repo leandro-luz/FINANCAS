@@ -61,7 +61,6 @@ public class ItemDaoSqlite extends GenericDaoSqlite implements ItemDao {
         SQLiteDatabase db = getWritebleDB();
         ContentValues values = new ContentValues();
         values.put("descricao", lancamento.getItem().getDescricao().toUpperCase());
-        values.put("habilitado", lancamento.getItem().getHabilitado());
         String where = "idItem = ?";
         String argumentos[] = {String.valueOf(lancamento.getItem().getIdItem())};
         id = db.update("item", values, where, argumentos);
@@ -201,5 +200,17 @@ public class ItemDaoSqlite extends GenericDaoSqlite implements ItemDao {
             }
         }
         return contador;
+    }
+
+    @Override
+    public long alterarStatus(Lancamento lancamento) {
+        long id = 0;
+        SQLiteDatabase db = getWritebleDB();
+        ContentValues values = new ContentValues();
+        values.put("habilitado", lancamento.getItem().getHabilitado());
+        String where = "idItem = ?";
+        String argumentos[] = {String.valueOf(lancamento.getItem().getIdItem())};
+        id = db.update("item", values, where, argumentos);
+        return id;
     }
 }

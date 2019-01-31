@@ -16,4 +16,5 @@ public interface ItemDao {
     List<Item> listarTodosReferencia(Integer cat, Integer tip);
     List<String> listarTodosString();
     Integer contarDescricao(Integer categoria, Integer tipo, String descricao);
+    long alterarStatus(Lancamento lancamento);
 }

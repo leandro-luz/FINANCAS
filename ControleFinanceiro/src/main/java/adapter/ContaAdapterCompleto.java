@@ -46,11 +46,11 @@ public class ContaAdapterCompleto extends BaseAdapter{
     @Override
     public View getView(int position, View convertview, ViewGroup parent) {
         Conta conta = contas.get(position);
-        View linha = LayoutInflater.from(ctx).inflate(R.layout.resumo, parent, false);
+        View linha = LayoutInflater.from(ctx).inflate(R.layout.listaconta, parent, false);
         TextView txtId = (TextView) linha.findViewById(R.id.txtId);
-        TextView txtBanco = (TextView) linha.findViewById(R.id.txtCategoria);
-        TextView txtConta = (TextView) linha.findViewById(R.id.txtTipo);
-        TextView txtSaldo = (TextView) linha.findViewById(R.id.txtItem);
+        TextView txtBanco = (TextView) linha.findViewById(R.id.txtBanco);
+        TextView txtConta = (TextView) linha.findViewById(R.id.txtConta);
+        TextView txtSaldo = (TextView) linha.findViewById(R.id.txtSaldo);
         //Resources res = ctx.getResources();
         txtId.setText(Integer.toString(conta.getIdBanco()));
         txtBanco.setText(conta.getBancoNome());

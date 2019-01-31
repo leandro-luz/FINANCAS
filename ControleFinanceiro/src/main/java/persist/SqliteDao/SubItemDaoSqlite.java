@@ -48,7 +48,7 @@ public class SubItemDaoSqlite extends GenericDaoSqlite implements SubItemDao {
     public Lancamento buscar(Lancamento lancamento) {
         SQLiteDatabase db = getReadableDB();
         Cursor resultSet = db.rawQuery("select subitem.idSubItem, categoria.descricao, tipo.descricao, item.descricao, subitem.descricao, " +
-                "categoria.idCategoria, tipo.idTipo, item.idItem, subitem.idSubItem " +
+                "categoria.idCategoria, tipo.idTipo, item.idItem " +
                 "from subitem " +
                 "inner join categoria on subitem.idCategoria = categoria.idCategoria " +
                 "inner join tipo on subitem.idTipo = tipo.idTipo " +
@@ -67,7 +67,6 @@ public class SubItemDaoSqlite extends GenericDaoSqlite implements SubItemDao {
                     subitem.setIdCategoria(resultSet.getInt(5));
                     subitem.setIdTipo(resultSet.getInt(6));
                     subitem.setIdItem(resultSet.getInt(7));
-                    subitem.setIdSubItem(resultSet.getInt(8));
 
                     lancamento.setSubitem(subitem);
                 } while (resultSet.moveToNext());
@@ -96,8 +95,6 @@ public class SubItemDaoSqlite extends GenericDaoSqlite implements SubItemDao {
         SQLiteDatabase db = getWritebleDB();
         ContentValues values = new ContentValues();
         values.put("descricao", lancamento.getSubitem().getDescricao().toUpperCase());
-        values.put("habilitado", lancamento.getSubitem().getHabilitado());
-        values.put("favorito", lancamento.getSubitem().getFavorito());
         String where = "idSubItem = ?";
         String argumentos[] = {String.valueOf(lancamento.getSubitem().getIdSubItem())};
         id = db.update("subitem", values, where, argumentos);
@@ -271,5 +268,18 @@ public class SubItemDaoSqlite extends GenericDaoSqlite implements SubItemDao {
             }
         }
         return contador;
+    }
+
+    @Override
+    public long alterarStatus(Lancamento lancamento) {
+        long id = 0;
+        SQLiteDatabase db = getWritebleDB();
+        ContentValues values = new ContentValues();
+        values.put("habilitado", lancamento.getSubitem().getHabilitado());
+        values.put("favorito", lancamento.getSubitem().getFavorito());
+        String where = "idSubItem = ?";
+        String argumentos[] = {String.valueOf(lancamento.getSubitem().getIdSubItem())};
+        id = db.update("subitem", values, where, argumentos);
+        return id;
     }
 }

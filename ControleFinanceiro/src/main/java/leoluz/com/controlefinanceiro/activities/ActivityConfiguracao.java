@@ -109,7 +109,7 @@ public class ActivityConfiguracao extends AppCompatActivity implements View.OnCl
                 FavoritoDao favoritoDao = FabricaDao.criarFavoritoDao();
                 if (favoritoDao.listarNomes().size()>0) {
                     Intent fav = new Intent(this, ActivityListaFavorito.class);
-                    //ele.putExtra("opcao","elemento");
+                    fav.putExtra("opcao","ler");
                     startActivity(fav);
                 }else{
                     Toast.makeText(this, "A lista está vazia", Toast.LENGTH_SHORT).show();

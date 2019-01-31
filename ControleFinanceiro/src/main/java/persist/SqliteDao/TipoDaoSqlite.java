@@ -60,7 +60,6 @@ public class TipoDaoSqlite extends GenericDaoSqlite implements TipoDao {
         SQLiteDatabase db = getWritebleDB();
         ContentValues values = new ContentValues();
         values.put("descricao", lancamento.getTipo().getDescricao().toUpperCase());
-        values.put("habilitado", lancamento.getTipo().getHabilitado());
         String where = "idTipo = ?";
         String argumentos[] = {String.valueOf(lancamento.getTipo().getIdTipo())};
         id = db.update("tipo", values, where, argumentos);
@@ -194,5 +193,17 @@ public class TipoDaoSqlite extends GenericDaoSqlite implements TipoDao {
             }
         }
         return contador;
+    }
+
+    @Override
+    public long alterarStatus(Lancamento lancamento) {
+        long id = 0;
+        SQLiteDatabase db = getWritebleDB();
+        ContentValues values = new ContentValues();
+        values.put("habilitado", lancamento.getTipo().getHabilitado());
+        String where = "idTipo = ?";
+        String argumentos[] = {String.valueOf(lancamento.getTipo().getIdTipo())};
+        id = db.update("tipo", values, where, argumentos);
+        return id;
     }
 }

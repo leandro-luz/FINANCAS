@@ -141,28 +141,6 @@
             android:inputType="text" />
     </LinearLayout>
 
-
-    <Switch
-        android:id="@+id/swtHabilitado"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/txt_habilitado" />
-
-    <Switch
-        android:id="@+id/swtFavorito"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/txt_favorito" />
-
-    <Switch
-        android:id="@+id/swtIncremento"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/txt_incremento" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -192,5 +170,25 @@
             android:text="@string/btn_voltar" />
     </LinearLayout>
 
+    <Switch
+        android:id="@+id/swtHabilitado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/txt_habilitado" />
+
+    <Switch
+        android:id="@+id/swtFavorito"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/txt_favorito" />
+
+    <Switch
+        android:id="@+id/swtIncremento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/txt_incremento" />
 
 </LinearLayout>

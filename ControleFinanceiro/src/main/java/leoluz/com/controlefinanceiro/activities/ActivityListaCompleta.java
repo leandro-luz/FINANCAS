@@ -102,6 +102,7 @@ public class ActivityListaCompleta extends AppCompatActivity {
 
         TextView txtHeader = new TextView(this);
         txtHeader.setText(R.string.txt_cabecalho_listaCompleta);
+        txtHeader.setTextSize(10);
         listView.addHeaderView(txtHeader);
 
         //Montar a lista conforme a opção
@@ -109,6 +110,7 @@ public class ActivityListaCompleta extends AppCompatActivity {
 
             case "categoria":
                 try {
+                    txtHeader.setText("Id ------- Descrição ------------------- Tipo -----------------------");
                     CategoriaDao daoCat = FabricaDao.criarCategoriaDao();
                     listaCategoria = new ArrayList<>();
                     listaCategoria = daoCat.listarTodos();
@@ -130,6 +132,7 @@ public class ActivityListaCompleta extends AppCompatActivity {
                 break;
             case "tipo":
                 try {
+                    txtHeader.setText("Id ------ Categoria ------------------- Descrição -------------------");
                     TipoDao daoTip = FabricaDao.criarTipoDao();
                     listaTipo = new ArrayList<>();
                     listaTipo = daoTip.listarTodosNome();
@@ -151,6 +154,7 @@ public class ActivityListaCompleta extends AppCompatActivity {
                 break;
             case "item":
                 try {
+                    txtHeader.setText("Id ---- Categoria --------- Tipo ---------------- Descrição ---------");
                     ItemDao daoIt = FabricaDao.criarItemDao();
                     listaItem = new ArrayList<>();
                     listaItem = daoIt.listarTodosNome();
@@ -171,6 +175,7 @@ public class ActivityListaCompleta extends AppCompatActivity {
                 break;
             case "subitem":
                 try {
+                    txtHeader.setText("Id ---- Categoria ----- Tipo ---------- Item ---------- Descrição ----");
                     SubItemDao daoSit = FabricaDao.criarSubitemDao();
                     listaSubitem = new ArrayList<>();
                     listaSubitem = daoSit.listarTodosNome();
@@ -191,6 +196,7 @@ public class ActivityListaCompleta extends AppCompatActivity {
 
             case "elemento":
                 try {
+                    txtHeader.setText("Id Catego.- Tipo ------ Item --------- SubItem ------ Descrição -----");
                     ElementoDao daoEle = FabricaDao.criarElementoDao();
                     listaElemento = new ArrayList<>();
                     listaElemento = daoEle.listarTodosNome();
@@ -211,6 +217,7 @@ public class ActivityListaCompleta extends AppCompatActivity {
 
             case "banco":
                 try {
+                    txtHeader.setText("Id -------------- Descrição -----------------------------------------");
                     BancoDao bancoDao = FabricaDao.criarBancoDao();
                     listaBanco = new ArrayList<>();
                     listaBanco = bancoDao.listarTodos();
@@ -225,6 +232,7 @@ public class ActivityListaCompleta extends AppCompatActivity {
 
             case "conta":
                 try {
+                    txtHeader.setText("Id ------ Banco -------------- Conta -------------- Saldo -----------");
                     ContaDao contaDao = FabricaDao.criarContaDao();
                     listaConta = new ArrayList<>();
                     listaConta = contaDao.listarTodos();
